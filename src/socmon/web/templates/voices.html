@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Варианты голоса{% endblock %}
+{% block crumb %}Варианты голоса{% endblock %}
+{% block body %}
+<div style="max-width:1020px;margin:0 auto">
+  <p class="sub" style="letter-spacing:.06em">ГОЛОС ОПРОСА</p>
+  <h1>Спокойно. Доброжелательно. Понятно.</h1>
+  <p class="sub">Мужские и женские голоса на одинаковых репликах. Послушайте короткий вопрос,
+    длинное вступление и завершение разговора — затем попробуйте голос в демо.</p>
+  <form method="get" action="/voices" class="panel" style="padding:18px;margin:24px 0">
+    {% if legacy %}<input type="hidden" name="legacy" value="true">{% endif %}
+    <div class="row" style="flex-wrap:wrap;align-items:end;gap:16px">
+      <label style="flex:1;min-width:220px">Реплика<br>
+        <select name="sample" style="width:100%;margin-top:6px">
+          {% for key, label in samples.items() %}
+          <option value="{{ key }}" {% if key == sample %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label style="flex:1;min-width:220px">Качество<br>
+        <select name="rate" style="width:100%;margin-top:6px">
+          <option value="8000" {% if rate == 8000 %}selected{% endif %}>Телефонная версия · 8 кГц</option>
+          <option value="24000" {% if rate == 24000 %}selected{% endif %}>Студийная версия · 24 кГц</option>
+        </select>
+      </label>
+      <button type="submit">Сравнить</button>
+    </div>
+  </form>
+  <div class="panel" style="padding:20px 24px;margin-bottom:24px">
+    <div class="sub" style="margin-bottom:8px">{{ samples[sample] }}</div>
+    <div style="font-size:18px;line-height:1.6">{{ text }}</div>
+  </div>
+  {% if not voices %}
+  <div class="note">Примеры готовятся. Пока можно <a href="/demo">послушать текущий голос</a>.</div>
+  {% endif %}
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px">
+    {% for v in voices %}
+    <section class="panel" style="padding:22px">
+      <div class="sub">{{ v.gender }}</div>
+      <h2 style="margin:6px 0 18px">{{ v.name }}</h2>
+      <audio controls preload="none" aria-label="{{ v.name }} — {{ samples[sample] }}"
+             style="width:100%" src="/voices/{{ v.id }}/sample/{{ sample }}/{{ rate }}"></audio>
+      <p style="margin-bottom:0">
+        {% if v.id in ready %}<a href="/demo?voice={{ v.id }}">Пройти демо этим голосом →</a>
+        {% else %}<span class="sub">Полная озвучка готовится</span>{% endif %}
+      </p>
+    </section>
+    {% endfor %}
+  </div>
+  {% if has_natural %}
+  <p style="margin-top:20px">
+    {% if legacy %}<a href="/voices?sample={{ sample }}&amp;rate={{ rate }}">Анна и Алексей</a>
+    {% else %}<a href="/voices?legacy=true&amp;sample={{ sample }}&amp;rate={{ rate }}">Сравнить с предыдущими голосами</a>{% endif %}
+  </p>
+  {% endif %}
+  <p class="sub" style="margin-top:26px">Для выбора голоса опроса сравнивайте телефонные версии.
+    Студийные помогают услышать тембр, но на линии звук будет уже.
+    Формулировки во всех вариантах одинаковы. Синтезированная речь; голосовой помощник
+    представляется во вступлении.</p>
+  <a href="/demo">Текущий голос опроса</a>
+</div>
+<script nonce="{{ request.state.csp_nonce }}">
+  document.querySelectorAll('audio').forEach(audio => {
+    audio.addEventListener('play', () => {
+      document.querySelectorAll('audio').forEach(other => {
+        if (other !== audio) other.pause();
+      });
+    });
+  });
+</script>
+{% endblock %}

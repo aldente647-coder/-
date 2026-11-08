@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Журнал{% endblock %}
+{% block crumb %}Журнал{% endblock %}
+{% block body %}
+<h1>Журнал действий</h1>
+{% if entries %}
+<div class="panel scroll">
+<table>
+  <tr><th>Когда</th><th>Кто</th><th>Действие</th><th>Объект</th></tr>
+  {% for e in entries %}
+  <tr>
+    <td>{{ e.at.strftime('%d.%m %H:%M:%S') }}</td>
+    <td>{{ e.actor }}</td>
+    <td>{{ e.action }}</td>
+    <td>{{ e.entity_type }} <code>{{ e.entity_id[:12] }}</code></td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% else %}
+<div class="empty">Журнал пуст</div>
+{% endif %}
+{% endblock %}

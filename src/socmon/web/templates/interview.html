@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Интервью{% endblock %}
+{% block crumb %}Интервью{% endblock %}
+{% block body %}
+<h1><code>{{ interview.id.hex[:12] }}</code></h1>
+<div class="cards">
+  <div class="card"><div class="l">исход</div><div class="n" style="font-size:19px">{{ interview.outcome.value | ru if interview.outcome }}</div></div>
+  <div class="card"><div class="l">валидность</div><div class="n" style="font-size:19px">{{ interview.validity.value | ru }}</div></div>
+  <div class="card"><div class="l">длительность</div><div class="n">{{ '%.0f'|format(interview.duration_sec or 0) }} с</div></div>
+  <div class="card"><div class="l">согласие</div><div class="n">{{ 'да' if interview.consent else 'нет' }}</div></div>
+</div>
+{% if interview.validity_reasons %}
+<div class="note bad"><b>Основания браковки:</b> {{ interview.validity_reasons|join(', ') }}</div>
+{% endif %}
+{% if me.can(Permission.LISTEN_RECORDING) %}
+<div class="row">
+  <a href="/interviews/{{ interview.id }}/recording" class="plain"><button class="ghost">Запись разговора</button></a>
+  <span class="tag">обращение попадёт в журнал</span>
+</div>
+{% endif %}
+{% endblock %}

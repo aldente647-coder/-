@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Обзор{% endblock %}
+{% block crumb %}Обзор{% endblock %}
+{% block body %}
+<h1>Обзор</h1>
+{% if wave %}
+<p class="sub">{{ wave.code }} · {{ wave.name }} · цель {{ wave.target_min }}–{{ wave.target_max }} интервью</p>
+
+<div class="cards">
+  <div class="card calm">
+    <div class="l">Попыток дозвона</div>
+    <div class="n">{{ stats.attempts }}</div>
+    <div style="margin-top:12px"><a href="/dialling" class="plain"><button class="ghost" style="font-size:12.5px;padding:6px 11px">Обзвон</button></a></div>
+  </div>
+  <div class="card">
+    <div class="l">Интервью начато</div>
+    <div class="n">{{ stats.interviews }}</div>
+    <div style="margin-top:12px"><a href="/interviews" class="plain"><button class="ghost" style="font-size:12.5px;padding:6px 11px">Все интервью</button></a></div>
+  </div>
+  <div class="card ok">
+    <div class="l">Валидных</div>
+    <div class="n">{{ stats.valid }}</div>
+    <div style="margin-top:12px"><a href="/analytics" class="plain"><button class="ghost" style="font-size:12.5px;padding:6px 11px">Аналитика</button></a></div>
+  </div>
+  <div class="card bad">
+    <div class="l">Забраковано</div>
+    <div class="n">{{ stats.invalid }}</div>
+    <div style="margin-top:12px"><a href="/interviews?validity=invalid" class="plain"><button class="ghost" style="font-size:12.5px;padding:6px 11px">Посмотреть</button></a></div>
+  </div>
+  <div class="card calm">
+    <div class="l">Дошли до конца</div>
+    <div class="n">{{ stats.completed }}</div>
+    <div style="margin-top:12px"><a href="/exports" class="plain"><button class="ghost" style="font-size:12.5px;padding:6px 11px">Выгрузки</button></a></div>
+  </div>
+</div>
+
+{% if stats.valid < wave.target_min %}
+<div class="note bad">
+  <b>Недобор объёма.</b> Валидных {{ stats.valid }}, нужно минимум {{ wave.target_min }}.
+  Доверительные интервалы будут шире расчётных.
+</div>
+{% endif %}
+{% else %}
+<div class="empty">Волн пока нет</div>
+{% endif %}
+{% endblock %}

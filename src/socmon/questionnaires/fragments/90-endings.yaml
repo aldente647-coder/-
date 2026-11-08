@@ -1,0 +1,85 @@
+# Завершения. Каждый путь по анкете обязан приводить сюда.
+#
+# Формулировка каждого прощания утверждается Заказчиком (ТЗ §8.1):
+# импровизировать на выходе робот не имеет права ровно так же,
+# как и в вопросах.
+
+nodes:
+  - id: outro
+    kind: info
+    section: outro
+    audio_key: outro_v1
+    text: "Спасибо за участие в опросе. Всего доброго."
+    next: end_completed
+
+  - id: end_completed
+    kind: end
+    section: outro
+    text: ""
+    outcome: completed
+
+  - id: end_no_consent
+    kind: end
+    section: outro
+    audio_key: end_no_consent_v1
+    text: "Понимаю. Извините за беспокойство, всего доброго."
+    outcome: no_consent
+
+  - id: end_ineligible_age
+    kind: end
+    section: outro
+    audio_key: end_ineligible_age_v1
+    text: "Спасибо. Опрос проводится среди совершеннолетних. Всего доброго."
+    outcome: ineligible_age
+
+  - id: end_ineligible_territory
+    kind: end
+    section: outro
+    audio_key: end_ineligible_territory_v1
+    text: "Спасибо. Опрос проводится среди жителей Республики. Всего доброго."
+    outcome: ineligible_territory
+
+  - id: end_dont_call
+    kind: end
+    section: outro
+    audio_key: end_dont_call_v1
+    # ТЗ §6.2: номер немедленно вносится в стоп-лист, действующий на все волны.
+    text: >-
+      Ваш номер исключён из обзвона, повторных звонков не будет.
+      Извините за беспокойство.
+    outcome: dont_call_request
+
+  - id: end_callback
+    kind: end
+    section: outro
+    audio_key: end_callback_v1
+    text: "Хорошо, мы перезвоним в другое время. Всего доброго."
+    outcome: callback_request
+
+  - id: end_refusal
+    kind: end
+    section: outro
+    audio_key: end_refusal_v1
+    text: "Спасибо за уделённое время. Всего доброго."
+    outcome: refusal_during
+
+  - id: end_refusal_before
+    kind: end
+    section: outro
+    audio_key: end_refusal_before_v1
+    text: "Извините за беспокойство. Всего доброго."
+    outcome: refusal_before
+
+  - id: end_operator
+    kind: end
+    section: outro
+    audio_key: end_operator_v1
+    text: "Соединяю вас с сотрудником, оставайтесь на линии."
+    outcome: transferred_to_operator
+
+  - id: end_speech
+    kind: end
+    section: outro
+    audio_key: end_speech_v1
+    text: "К сожалению, вас плохо слышно. Извините за беспокойство, всего доброго."
+    outcome: speech_unusable

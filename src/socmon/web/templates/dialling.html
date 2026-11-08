@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Обзвон{% endblock %}
+{% block crumb %}Обзвон{% endblock %}
+{% block body %}
+<h1>Обзвон</h1>
+{% if attempts %}
+<div class="panel scroll">
+<table>
+  <tr><th>Попытка</th><th>№</th><th>Назначено</th><th>Стадия</th><th>Причина обрыва</th></tr>
+  {% for a in attempts %}
+  <tr>
+    <td><code>{{ a.id.hex[:8] }}</code></td>
+    <td>{{ a.attempt_no }}</td>
+    <td>{{ a.scheduled_at.strftime('%d.%m %H:%M') if a.scheduled_at }}</td>
+    <td>{{ a.stage.value | ru }}</td>
+    <td>{{ a.disposition.value | ru if a.disposition else '—' }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% else %}
+<div class="empty">Попыток пока нет</div>
+{% endif %}
+{% endblock %}

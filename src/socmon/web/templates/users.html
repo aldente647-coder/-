@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Доступ{% endblock %}
+{% block crumb %}Доступ{% endblock %}
+{% block body %}
+<h1>Доступ</h1>
+<div class="panel scroll">
+<table>
+  <tr><th>Логин</th><th>Имя</th><th>Роль</th><th>Номера</th><th>Записи</th><th>Состояние</th><th></th></tr>
+  {% for u in users %}
+  <tr>
+    <td>{{ u.login }}</td>
+    <td>{{ u.full_name }}</td>
+    <td>{{ ROLE_TITLES[u.role] if u.role in ROLE_TITLES else u.role }}</td>
+    <td>{{ 'видит' if Permission.VIEW_PHONE in ROLE_PERMISSIONS[u.role] else '—' }}</td>
+    <td>{{ 'слушает' if Permission.LISTEN_RECORDING in ROLE_PERMISSIONS[u.role] else '—' }}</td>
+    <td><span class="tag {{ 'ok' if u.is_active else 'bad' }}">{{ 'активна' if u.is_active else 'выключена' }}</span></td>
+    <td>
+      {% if u.id|string != me.user_id %}
+      <form method="post" action="/users/{{ u.id }}/toggle">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+        <button class="ghost">{{ 'Выключить' if u.is_active else 'Включить' }}</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

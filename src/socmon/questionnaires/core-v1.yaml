@@ -1,0 +1,559 @@
+# Эталонная анкета: постоянное ядро по ТЗ §7.2.
+#
+# Это НЕ анкета Заказчика. Формулировки синтетические, собраны по перечню тем
+# постоянного ядра, чтобы движок можно было отлаживать и демонстрировать до
+# получения реальной анкеты. Реальная подкладывается одним файлом.
+#
+# Правка любой формулировки меняет version_id всей анкеты — так и задумано.
+
+name: "Постоянное ядро мониторинга"
+wave: "reference"
+
+policy:
+  max_repeats: 1                      # ТЗ §8.1: переспросить не более одного раза
+  silence_timeout_sec: 6.0
+  barge_in_delay_sec: 3.0
+  max_unrecognized_before_abort: 3
+  target_duration_sec: 600            # ТЗ §3.3
+
+terminals:
+  dont_call_request: end_dont_call
+  callback_request: end_callback
+  refusal_before: end_refusal_before
+  refusal_during: end_refusal
+  transferred_to_operator: end_operator
+  speech_unusable: end_speech
+
+nodes:
+  # ---------------------------------------------------------------- вступление
+  - id: intro
+    kind: info
+    section: intro
+    audio_key: intro_v1
+    # ТЗ §8.4. Длительность названа честно: обещать «пять минут» при лимите
+    # в десять — терять респондента на самых ценных открытых вопросах.
+    # Фраза «номер не фиксируется» не используется: номер мы храним,
+    # он лишь отделён от аналитического контура (ТЗ §14.2).
+    text: >-
+      Здравствуйте. Проводится короткий анонимный социологический опрос.
+      Вы были выбраны случайным образом. Разговор ведёт голосовой помощник
+      на основе искусственного интеллекта. Участие добровольное, вы можете
+      не отвечать на любой вопрос и прекратить разговор в любой момент.
+      Ваши контактные данные хранятся отдельно от ответов и не связываются
+      с ними при обработке. Интервью займёт около десяти минут.
+    next: consent
+
+  - id: consent
+    kind: consent
+    section: intro
+    audio_key: consent_v1
+    text: "Вы согласны принять участие?"
+    refuse_next: end_no_consent
+    next: screen_age
+    accept:
+      code: 1
+      label: "Согласен"
+      phrases: ["да", "согласен", "согласна", "хорошо", "давайте", "можно", "конечно", "ладно"]
+    decline:
+      code: 2
+      label: "Не согласен"
+      phrases: ["нет", "не согласен", "не согласна", "не хочу", "некогда", "не буду"]
+
+  # ------------------------------------------------------------------ фильтры
+  - id: screen_age
+    kind: screener
+    section: intro
+    audio_key: screen_age_v1
+    text: "Скажите, пожалуйста, вам уже исполнилось восемнадцать лет?"
+    fail_next: end_ineligible_age
+    next: screen_territory
+    pass_codes: [1]
+    options:
+      - code: 1
+        label: "18 и старше"
+        phrases: ["да", "исполнилось", "конечно", "давно", "есть"]
+      - code: 2
+        label: "Младше 18"
+        phrases: ["нет", "не исполнилось", "еще нет", "мне меньше"]
+
+  - id: screen_territory
+    kind: screener
+    section: intro
+    audio_key: screen_territory_v1
+    text: "Вы постоянно проживаете на территории республики?"
+    fail_next: end_ineligible_territory
+    next: q_life
+    pass_codes: [1]
+    options:
+      - code: 1
+        label: "Проживает"
+        phrases: ["да", "проживаю", "живу", "постоянно", "конечно"]
+      - code: 2
+        label: "Не проживает"
+        phrases: ["нет", "не проживаю", "не живу", "я в другом", "приезжий", "временно"]
+
+  # ------------------------------------------------------------ постоянное ядро
+  - id: q_life
+    kind: scale
+    section: core
+    core_key: life_situation
+    audio_key: q_life_v1
+    text: >-
+      Оцените, пожалуйста, по шкале от нуля до десяти, насколько вы довольны
+      тем, как складывается ваша жизнь сейчас. Ноль — совсем не доволен,
+      десять — полностью доволен.
+    low: 0
+    high: 10
+    low_label: "совсем не доволен"
+    high_label: "полностью доволен"
+    next: q_family_change
+
+  - id: q_family_change
+    kind: single
+    section: core
+    core_key: family_change
+    audio_key: q_family_change_v1
+    text: >-
+      За последние полгода положение вашей семьи улучшилось, ухудшилось
+      или не изменилось?
+    next: q_material
+    options:
+      - code: 1
+        label: "Улучшилось"
+        phrases: ["улучшилось", "лучше", "получше", "стало лучше", "улучшение"]
+      - code: 2
+        label: "Не изменилось"
+        phrases: ["не изменилось", "так же", "без изменений", "никак", "как было", "одинаково"]
+      - code: 3
+        label: "Ухудшилось"
+        phrases: ["ухудшилось", "хуже", "похуже", "стало хуже", "ухудшение"]
+
+  - id: q_material
+    kind: scale
+    section: core
+    core_key: material_stability
+    audio_key: q_material_v1
+    text: >-
+      Насколько уверенно вы себя чувствуете в вопросах денег и цен?
+      Ноль — совсем не уверенно, десять — полностью уверенно.
+    low: 0
+    high: 10
+    low_label: "совсем не уверенно"
+    high_label: "полностью уверенно"
+    next: q_safety
+
+  - id: q_safety
+    kind: scale
+    section: core
+    core_key: safety
+    audio_key: q_safety_v1
+    text: >-
+      Насколько безопасно вы себя чувствуете там, где живёте?
+      Ноль — совсем небезопасно, десять — полностью безопасно.
+    low: 0
+    high: 10
+    low_label: "совсем небезопасно"
+    high_label: "полностью безопасно"
+    next: q_anxiety
+
+  - id: q_anxiety
+    kind: scale
+    section: core
+    core_key: anxiety
+    audio_key: q_anxiety_v1
+    text: >-
+      Насколько часто в последнее время вы испытываете тревогу за будущее?
+      Ноль — никогда, десять — постоянно.
+    low: 0
+    high: 10
+    low_label: "никогда"
+    high_label: "постоянно"
+    next: q_trust
+
+  - id: q_trust
+    kind: scale
+    section: core
+    core_key: institutional_trust
+    audio_key: q_trust_v1
+    text: >-
+      Насколько вы доверяете организациям и учреждениям, с которыми
+      приходится иметь дело? Ноль — совсем не доверяю, десять — полностью доверяю.
+    low: 0
+    high: 10
+    low_label: "совсем не доверяю"
+    high_label: "полностью доверяю"
+    next: q_fairness
+
+  - id: q_fairness
+    kind: scale
+    section: core
+    core_key: fairness
+    audio_key: q_fairness_v1
+    text: >-
+      Насколько справедливо, на ваш взгляд, устроена жизнь вокруг вас?
+      Ноль — совсем несправедливо, десять — вполне справедливо.
+    low: 0
+    high: 10
+    low_label: "совсем несправедливо"
+    high_label: "вполне справедливо"
+    next: q_conflict
+
+  - id: q_conflict
+    kind: scale
+    section: core
+    core_key: perceived_conflict
+    audio_key: q_conflict_v1
+    text: >-
+      Насколько напряжённо, по вашим ощущениям, складываются отношения
+      между людьми там, где вы живёте? Ноль — совсем спокойно,
+      десять — очень напряжённо.
+    low: 0
+    high: 10
+    low_label: "совсем спокойно"
+    high_label: "очень напряжённо"
+    next: q_authorities
+
+  - id: q_authorities
+    kind: scale
+    section: core
+    core_key: authorities_rating
+    audio_key: q_authorities_v1
+    text: >-
+      Как вы оцениваете работу местных органов власти по шкале от нуля
+      до десяти? Ноль — совсем плохо, десять — отлично.
+    low: 0
+    high: 10
+    low_label: "совсем плохо"
+    high_label: "отлично"
+    next: q_local_problem
+
+  - id: q_local_problem
+    kind: single
+    section: core
+    core_key: local_problem
+    audio_key: q_local_problem_v1
+    text: >-
+      Какая проблема сейчас волнует вас больше всего: цены и доходы,
+      медицина, жильё и коммунальные услуги, безопасность или дороги
+      и транспорт?
+    next: q_collective
+    options:
+      - code: 1
+        label: "Цены и доходы"
+        phrases: ["цены", "доходы", "деньги", "зарплата", "первое", "цены и доходы"]
+      - code: 2
+        label: "Медицина"
+        phrases: ["медицина", "здравоохранение", "больницы", "врачи", "второе"]
+      - code: 3
+        label: "Жильё и ЖКХ"
+        phrases: ["жилье", "жкх", "коммуналка", "коммунальные", "третье"]
+      - code: 4
+        label: "Безопасность"
+        phrases: ["безопасность", "четвертое"]
+      - code: 5
+        label: "Дороги и транспорт"
+        phrases: ["дороги", "транспорт", "автобусы", "пятое", "дороги и транспорт"]
+
+  - id: q_collective
+    kind: single
+    section: core
+    core_key: collective_action
+    audio_key: q_collective_v1
+    text: >-
+      Готовы ли вы вместе с другими жителями законными способами
+      добиваться решения важной для вас проблемы — например, подписать
+      обращение или прийти на собрание?
+    next: q_open_leader
+    options:
+      - code: 1
+        label: "Готов"
+        phrases: ["готов", "готова", "да", "конечно", "разумеется", "почему бы нет"]
+      - code: 2
+        label: "Скорее готов"
+        phrases: ["скорее готов", "скорее да", "наверное да", "возможно"]
+      - code: 3
+        label: "Скорее не готов"
+        phrases: ["скорее не готов", "скорее нет", "вряд ли", "наверное нет"]
+      - code: 4
+        label: "Не готов"
+        phrases: ["не готов", "не готова", "нет", "ни за что", "точно нет"]
+
+
+  # ------------------------------------------------- открытые вопросы (ТЗ §7.5)
+  - id: q_open_leader
+    kind: open
+    section: core
+    audio_key: q_open_leader_v1
+    # Формулировка приведена в ТЗ §7.5 как пример.
+    text: >-
+      Есть ли человек, общественный деятель, автор, журналист, эксперт,
+      местный лидер, канал, сообщество или источник информации, которому
+      вы особенно доверяете в вопросах, важных для жизни вашего города
+      или страны? Назовите, пожалуйста, кого-либо или скажите, что таких нет.
+    max_seconds: 45
+    next: q_open_worry
+
+  - id: q_open_worry
+    kind: open
+    section: core
+    audio_key: q_open_worry_v1
+    text: >-
+      Что сейчас беспокоит вас больше всего и что, на ваш взгляд,
+      следовало бы изменить в первую очередь?
+    max_seconds: 45
+    next: sensitive_notice
+
+  # ------------------------------------- чувствительный блок и соцдем (ТЗ §7.6)
+  - id: sensitive_notice
+    kind: info
+    section: demography
+    audio_key: sensitive_notice_v1
+    # ТЗ §7.6: перед чувствительным блоком робот сообщает о праве не отвечать.
+    text: >-
+      Осталось несколько вопросов о вас. На любой из них можно не отвечать —
+      просто скажите, что затрудняетесь.
+    next: d_gender
+
+  - id: d_gender
+    kind: single
+    section: demography
+    core_key: gender
+    audio_key: d_gender_v1
+    text: "Укажите, пожалуйста, ваш пол."
+    next: d_age_group
+    options:
+      - code: 1
+        label: "Мужской"
+        phrases: ["мужской", "мужчина", "муж", "мужик"]
+      - code: 2
+        label: "Женский"
+        phrases: ["женский", "женщина", "жен", "женя"]
+
+  - id: d_age_group
+    kind: single
+    section: demography
+    core_key: age_group
+    audio_key: d_age_group_v1
+    text: >-
+      К какой возрастной группе вы себя отнесёте: от восемнадцати до тридцати
+      четырёх, от тридцати пяти до пятидесяти четырёх, или пятьдесят пять и старше?
+    next: d_territory
+    options:
+      - code: 1
+        label: "18-34"
+        phrases: ["первая", "от восемнадцати", "молодой", "восемнадцати до тридцати",
+                  "двадцать", "тридцать"]
+        patterns: ['(?<!\w)(1[89]|2\d|3[0-4])(?!\w)']
+      - code: 2
+        label: "35-54"
+        phrases: ["вторая", "от тридцати пяти", "средний", "сорок"]
+        patterns: ['(?<!\w)(3[5-9]|4\d|5[0-4])(?!\w)']
+      - code: 3
+        label: "55+"
+        phrases: ["третья", "пятьдесят пять и старше", "пенсионер", "пенсионерка",
+                  "шестьдесят", "семьдесят", "восемьдесят"]
+        patterns: ['(?<!\w)(5[5-9]|[6-9]\d|10\d)(?!\w)']
+
+  - id: d_territory
+    kind: single
+    section: demography
+    core_key: territory
+    audio_key: d_territory_v1
+    # Территория — базовый параметр структуры выборки наравне с полом
+    # и возрастом (ТЗ §5.4). Перечень районов утверждается Заказчиком
+    # на каждую волну.
+    text: "В каком районе вы живёте: северном, центральном или южном?"
+    next: d_settlement
+    options:
+      - code: 1
+        label: "Северный"
+        phrases: ["северный", "север", "на севере", "первый"]
+      - code: 2
+        label: "Центральный"
+        phrases: ["центральный", "центр", "в центре", "второй"]
+      - code: 3
+        label: "Южный"
+        phrases: ["южный", "юг", "на юге", "третий"]
+
+  - id: d_settlement
+    kind: single
+    section: demography
+    core_key: settlement
+    audio_key: d_settlement_v1
+    text: "Вы живёте в городе, посёлке или в сельской местности?"
+    next: d_education
+    options:
+      - code: 1
+        label: "Город"
+        phrases: ["город", "в городе", "городе"]
+      - code: 2
+        label: "Посёлок"
+        phrases: ["поселок", "в поселке", "пгт"]
+      - code: 3
+        label: "Село"
+        phrases: ["село", "деревня", "сельская", "в селе", "в деревне"]
+
+  - id: d_education
+    kind: single
+    section: demography
+    core_key: education
+    audio_key: d_education_v1
+    text: "Какое у вас образование: среднее, среднее специальное или высшее?"
+    next: d_employment
+    options:
+      - code: 1
+        label: "Среднее"
+        phrases: ["среднее", "школа", "одиннадцать классов"]
+      - code: 2
+        label: "Среднее специальное"
+        phrases: ["среднее специальное", "техникум", "колледж", "профессиональное", "спо"]
+      - code: 3
+        label: "Высшее"
+        phrases: ["высшее", "университет", "институт", "вуз"]
+
+  - id: d_employment
+    kind: single
+    section: demography
+    core_key: employment
+    audio_key: d_employment_v1
+    text: >-
+      Вы сейчас работаете, учитесь, находитесь на пенсии или временно
+      не работаете?
+    next: d_nationality
+    options:
+      - code: 1
+        label: "Работает"
+        phrases: ["работаю", "работает", "тружусь", "занят", "занята"]
+      - code: 2
+        label: "Учится"
+        phrases: ["учусь", "студент", "студентка", "школьник"]
+      - code: 3
+        label: "Пенсионер"
+        phrases: ["пенсия", "на пенсии", "пенсионер", "пенсионерка"]
+      - code: 4
+        label: "Не работает"
+        phrases: ["не работаю", "безработный", "безработная", "временно не работаю", "в декрете"]
+
+  - id: d_nationality
+    kind: single
+    section: demography
+    core_key: nationality
+    audio_key: d_nationality_v1
+    text: "К какой национальности вы себя относите?"
+    sensitive: true
+    allow_dont_know: true
+    required: false
+    next: d_politics
+    options:
+      - code: 1
+        label: "Русский"
+        phrases: ["русский", "русская", "россиянин", "россиянка"]
+      - code: 2
+        label: "Украинец"
+        phrases: ["украинец", "украинка"]
+      - code: 3
+        label: "Другая"
+        phrases: ["другая", "другой", "иная", "иначе"]
+
+  - id: d_politics
+    kind: single
+    section: demography
+    core_key: political_interest
+    audio_key: d_politics_v1
+    text: >-
+      Насколько вы интересуетесь политикой: постоянно слежу, иногда слежу
+      или совсем не интересуюсь?
+    sensitive: true
+    allow_dont_know: true
+    required: false
+    next: outro
+    options:
+      - code: 1
+        label: "Постоянно следит"
+        phrases: ["постоянно", "слежу", "регулярно", "каждый день"]
+      - code: 2
+        label: "Иногда следит"
+        phrases: ["иногда", "изредка", "время от времени", "когда как"]
+      - code: 3
+        label: "Не интересуется"
+        phrases: ["не интересуюсь", "не слежу", "совсем нет", "неинтересно", "не интересно"]
+
+  # ---------------------------------------------------------------- завершения
+  - id: outro
+    kind: info
+    section: outro
+    audio_key: outro_v1
+    text: "Спасибо за участие в опросе. Всего доброго."
+    next: end_completed
+
+  - id: end_completed
+    kind: end
+    section: outro
+    text: ""
+    outcome: completed
+
+  - id: end_no_consent
+    kind: end
+    section: outro
+    audio_key: end_no_consent_v1
+    text: "Понимаю. Извините за беспокойство, всего доброго."
+    outcome: no_consent
+
+  - id: end_ineligible_age
+    kind: end
+    section: outro
+    audio_key: end_ineligible_age_v1
+    text: "Спасибо. Опрос проводится среди совершеннолетних. Всего доброго."
+    outcome: ineligible_age
+
+  - id: end_ineligible_territory
+    kind: end
+    section: outro
+    audio_key: end_ineligible_territory_v1
+    text: "Спасибо. Опрос проводится среди жителей республики. Всего доброго."
+    outcome: ineligible_territory
+
+  - id: end_dont_call
+    kind: end
+    section: outro
+    audio_key: end_dont_call_v1
+    # ТЗ §6.2: номер немедленно вносится в стоп-лист, действующий на все волны.
+    text: >-
+      Понял вас. Ваш номер будет исключён из обзвона.
+      Извините за беспокойство, всего доброго.
+    outcome: dont_call_request
+
+  - id: end_callback
+    kind: end
+    section: outro
+    audio_key: end_callback_v1
+    text: "Хорошо, перезвоним в другое время. Всего доброго."
+    outcome: callback_request
+
+  - id: end_refusal
+    kind: end
+    section: outro
+    audio_key: end_refusal_v1
+    text: "Спасибо за уделённое время. Всего доброго."
+    outcome: refusal_during
+
+  - id: end_refusal_before
+    kind: end
+    section: outro
+    audio_key: end_refusal_before_v1
+    text: "Извините за беспокойство. Всего доброго."
+    outcome: refusal_before
+
+  - id: end_operator
+    kind: end
+    section: outro
+    audio_key: end_operator_v1
+    text: "Соединяю вас с сотрудником, оставайтесь на линии."
+    outcome: transferred_to_operator
+
+  - id: end_speech
+    kind: end
+    section: outro
+    audio_key: end_speech_v1
+    text: "К сожалению, вас плохо слышно. Извините за беспокойство, всего доброго."
+    outcome: speech_unusable

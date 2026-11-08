@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Аналитика{% endblock %}
+{% block crumb %}Аналитика{% endblock %}
+{% block body %}
+<h1>Аналитика</h1>
+
+<form class="row" method="get">
+  <select name="wave">
+    {% for w in waves %}
+    <option value="{{ w.code }}" {% if wave and wave.code == w.code %}selected{% endif %}>{{ w.code }} — {{ w.name }}</option>
+    {% endfor %}
+  </select>
+  <button>Показать</button>
+</form>
+
+{% if not wave %}<div class="empty">Волн пока нет</div>
+{% elif problem %}<div class="note bad">{{ problem }}</div>
+{% elif summary %}
+
+<div class="cards">
+  <div class="card"><div class="l">валидных интервью</div><div class="n">{{ summary.valid_interviews }}</div></div>
+  <div class="card"><div class="l">эффективный объём</div><div class="n">{{ '%.0f'|format(summary.weights.effective_n) }}</div></div>
+  <div class="card"><div class="l">эффект дизайна</div><div class="n">{{ '%.2f'|format(summary.weights.design_effect) }}</div></div>
+  <div class="card"><div class="l">индекс напряжённости</div><div class="n">{{ '%.2f'|format(summary.index.aggregate) }}</div></div>
+</div>
+
+<h2>Компоненты индекса</h2>
+<div class="panel scroll">
+<table>
+  <tr><th></th><th>Компонент</th><th>Балл</th><th>Отказов</th><th style="width:35%"></th></tr>
+  {% for c in summary.index.components %}
+  <tr>
+    <td><code>{{ c.key }}</code></td>
+    <td style="white-space:normal">{{ c.name }}</td>
+    <td>{{ '%.2f'|format(c.value) }}</td>
+    <td>{{ '%.0f%%'|format(c.missing_share * 100) }}</td>
+    <td><div class="bar-chart"><div style="width:{{ (c.value * 10)|round|int }}%"></div></div></td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+<p class="sub" style="margin-top:10px">
+  Методика <code>{{ summary.index.recipe_hash }}</code> ·
+  полных наблюдений {{ summary.index.complete_cases }} из {{ summary.index.n }}
+</p>
+
+<h2>Структура выборки</h2>
+<div class="panel scroll">
+<table>
+  <tr><th>Признак</th><th>Категория</th><th>Невзвеш.</th><th>Взвеш.</th><th>Эталон</th></tr>
+  {% for variable, targets in summary.weights.reference.items() %}
+    {% for category, target in targets.items() %}
+    <tr>
+      <td>{{ variable }}</td><td>{{ category }}</td>
+      <td>{{ '%.1f%%'|format(summary.weights.unweighted[variable].get(category, 0) * 100) }}</td>
+      <td>{{ '%.1f%%'|format(summary.weights.achieved[variable].get(category, 0) * 100) }}</td>
+      <td>{{ '%.1f%%'|format(target * 100) }}</td>
+    </tr>
+    {% endfor %}
+  {% endfor %}
+</table>
+</div>
+<p class="sub" style="margin-top:10px">
+  Веса {{ '%.3f'|format(summary.weights.min_weight) }}–{{ '%.3f'|format(summary.weights.max_weight) }},
+  экстремальных {{ '%.1f%%'|format(summary.weights.extreme_share * 100) }}
+</p>
+
+{% if summary.notes %}
+<div class="note">
+  <b>Ограничения интерпретации</b>
+  <ul style="margin:8px 0 0 18px;padding:0">
+    {% for note in summary.notes %}<li>{{ note }}</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

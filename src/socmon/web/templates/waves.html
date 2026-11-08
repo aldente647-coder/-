@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Волны{% endblock %}
+{% block body %}
+<h1>Волны</h1>
+
+<div class="panel scroll">
+<table>
+  <tr><th>Код</th><th>Название</th><th>Период</th><th>Цель</th><th>Состояние</th><th>Готовность</th><th></th></tr>
+  {% for w in waves %}
+  {% set check = checks[w.id] %}
+  <tr>
+    <td><code>{{ w.code }}</code></td>
+    <td>{{ w.name }}</td>
+    <td>{{ w.starts_at.strftime('%d.%m') }}–{{ w.ends_at.strftime('%d.%m') }}</td>
+    <td>{{ w.target_min }}–{{ w.target_max }}</td>
+    <td><span class="tag {% if w.status.value == 'active' %}ok{% elif w.status.value == 'closed' %}bad{% endif %}">{{ w.status.value | ru }}</span></td>
+    <td>{% if check.ready %}<span class="tag ok">готова</span>
+        {% else %}<span class="tag bad">{{ plural(check.blockers|length, "препятствие", "препятствия", "препятствий") }}</span>{% endif %}</td>
+    <td>
+      {% for target in [WaveStatus.ACTIVE, WaveStatus.PAUSED, WaveStatus.CLOSED] %}
+        {% if can_transition(w.status, target) %}
+        <form method="post" action="/waves/{{ w.id }}/status" style="display:inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+          <input type="hidden" name="target" value="{{ target.value }}">
+          <button class="ghost">{{ {'active':'Запустить','paused':'Пауза','closed':'Завершить'}[target.value] }}</button>
+        </form>
+        {% endif %}
+      {% endfor %}
+    </td>
+  </tr>
+  {% if not check.ready or check.warnings %}
+  <tr><td colspan="7" style="white-space:normal;background:var(--bg)">
+    {% for c in check.blockers %}<div style="color:var(--bad)">✗ <b>{{ c.name }}</b> — {{ c.detail }}</div>{% endfor %}
+    {% for c in check.warnings %}<div style="color:var(--muted)">⚠ {{ c.name }} — {{ c.detail }}</div>{% endfor %}
+  </td></tr>
+  {% endif %}
+  {% endfor %}
+</table>
+</div>
+
+<h2>Новая волна</h2>
+<form method="post" action="/waves" class="row">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+  <input name="code" placeholder="Код, напр. 2026-w18" required>
+  <input name="name" placeholder="Название" required>
+  <input name="target_min" type="number" value="1500" title="минимум интервью" style="max-width:110px">
+  <input name="target_max" type="number" value="2000" title="максимум интервью" style="max-width:110px">
+  <button>Создать</button>
+</form>
+{% endblock %}

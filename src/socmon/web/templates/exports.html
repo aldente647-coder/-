@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Выгрузки{% endblock %}
+{% block crumb %}Выгрузки{% endblock %}
+{% block body %}
+<h1>Выгрузки</h1>
+{% if error %}<div class="note bad">{{ error }}</div>{% endif %}
+
+<form class="row" method="get">
+  <select name="wave">
+    {% for w in waves %}
+    <option value="{{ w.code }}" {% if wave and wave.code == w.code %}selected{% endif %}>{{ w.code }} — {{ w.name }}</option>
+    {% endfor %}
+  </select>
+  <button>Выбрать</button>
+</form>
+
+{% if not wave %}<div class="empty">Волн пока нет</div>
+{% else %}
+<div class="cards">
+  <div class="card"><div class="l">валидных</div><div class="n">{{ stats.valid }}</div></div>
+  <div class="card"><div class="l">забраковано</div><div class="n">{{ stats.invalid }}</div></div>
+  <div class="card"><div class="l">попыток дозвона</div><div class="n">{{ stats.attempts }}</div></div>
+</div>
+
+<div class="row">
+  <form method="post" action="/exports/{{ wave.id }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+    <button class="big">{{ 'Пересобрать' if artifact else 'Собрать пакет' }}</button>
+  </form>
+  {% if artifact %}
+  <a href="/exports/{{ wave.id }}/download" class="plain"><button class="ghost big">Скачать архив</button></a>
+  {% endif %}
+</div>
+
+{% if artifact %}
+<p class="sub">
+  Собран {{ artifact.built_at.strftime('%d.%m.%Y %H:%M') }} ·
+  {{ '%.0f'|format(artifact.size_bytes / 1024) }} КБ ·
+  {{ artifact.files|join(', ') }}
+</p>
+{% endif %}
+
+<h2>Состав пакета</h2>
+<div class="panel scroll">
+<table>
+  <tr><th>Что</th><th>Формат</th></tr>
+  <tr><td>Обезличенный массив интервью</td><td>CSV</td></tr>
+  <tr><td>Кодбук переменных</td><td>CSV</td></tr>
+  <tr><td>Распределения, кросс-табуляции, веса, индекс</td><td>XLSX</td></tr>
+  <tr><td>Аналитический отчёт</td><td>DOCX</td></tr>
+</table>
+</div>
+{% endif %}
+{% endblock %}

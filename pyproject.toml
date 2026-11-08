@@ -1,0 +1,126 @@
+[project]
+name = "socmon"
+version = "0.1.0"
+description = "Комплекс непрерывного телефонного соцмониторинга с голосовым ИИ"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.19.1",
+    "cryptography>=50.0.0",
+    "fastapi>=0.141.1",
+    "httpx>=0.28.1",
+    "itsdangerous>=2.2.0",
+    "jinja2>=3.1.6",
+    "openpyxl>=3.1.5",
+    "psycopg[binary]>=3.3.4",
+    "pydantic>=2.9",
+    "python-docx>=1.2.0",
+    "python-multipart>=0.0.32",
+    "pyyaml>=6.0",
+    "sqlalchemy>=2.0",
+    "uvicorn[standard]>=0.52.4",
+    "websockets>=17.0.1",
+]
+
+[project.optional-dependencies]
+voice-mlx = [
+    "mlx-audio==0.5.3; platform_system == 'Darwin' and platform_machine == 'arm64'",
+    # Независимая проверка записей распознаванием (socmon voice qa).
+    "mlx-whisper>=0.4; platform_system == 'Darwin' and platform_machine == 'arm64'",
+    # Клонирование голоса с ударениями: русская дообучка F5-TTS на MLX.
+    "f5-tts-mlx>=0.2; platform_system == 'Darwin' and platform_machine == 'arm64'",
+]
+accent = [
+    # Словарь ударений с разбором омографов. Ставится и на сервер:
+    # всё, что озвучивается, проходит через него.
+    "ruaccent>=1.5",
+]
+voice = [
+    # torch нужен только для синтеза. Логика озвучки от него не зависит
+    # и проверяется без него — поэтому отдельная группа, а не общая
+    # зависимость: разворачивать 200 МБ ради выгрузок незачем.
+    "torch>=2.5",
+    "numpy>=2.0",
+    # silero_tts грузится через torch.hub и тянет эти два сам —
+    # но только если они уже стоят.
+    "omegaconf>=2.3",
+    "torchaudio>=2.5",
+]
+asr = [
+    # Распознавание речи. Пакет ставится из репозитория, а не с PyPI:
+    # на PyPI лежит 0.1.0 под модели второй версии, третья есть только
+    # в исходниках.
+    "gigaam @ git+https://github.com/salute-developers/GigaAM",
+    "torch>=2.5",
+    "torchaudio>=2.5",
+    # transcribe_longform тянет VAD-модель через huggingface_hub, но в своих
+    # зависимостях его не объявляет. Без него длинные открытые ответы
+    # падают уже в проде.
+    "huggingface-hub>=0.26",
+]
+dev = [
+    "pytest>=8.3",
+    "mypy>=1.13",
+    "ruff>=0.8",
+    "types-PyYAML>=6.0",
+]
+
+[project.scripts]
+socmon = "socmon.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+# gigaam ставится из репозитория: на PyPI лежит только 0.1.0 под модели
+# второй версии, третья есть исключительно в исходниках.
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/socmon"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+# Миграции генерирует Alembic; переписывать их под наш стиль незачем.
+extend-exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+# RUF001-003 ловят кириллицу как «двусмысленные» символы. Проект русскоязычный:
+# и комментарии, и грамматики ответов написаны кириллицей по существу задачи.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+# torch ставится опционально; отсутствие типов не должно ронять проверку
+# всего проекта.
+module = ["torch.*", "gigaam.*", "mlx.*", "mlx_audio.*", "mlx_whisper.*", "scipy.*", "onnxruntime.*", "ruaccent.*", "f5_tts_mlx.*", "f5_tts.*", "soundfile.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = [".", "src"]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[dependency-groups]
+asr = [
+    # Распознавание речи. Пакет ставится из репозитория, а не с PyPI:
+    # на PyPI лежит 0.1.0 под модели второй версии, третья есть только
+    # в исходниках.
+    "gigaam @ git+https://github.com/salute-developers/GigaAM",
+    "torch>=2.5",
+    "torchaudio>=2.5",
+    # transcribe_longform тянет VAD-модель через huggingface_hub, но в своих
+    # зависимостях его не объявляет. Без него длинные открытые ответы
+    # падают уже в проде.
+    "huggingface-hub>=0.26",
+]
+dev = [
+    "pytest-asyncio>=1.4.0",
+    "types-openpyxl>=3.1.5.20260807",
+]

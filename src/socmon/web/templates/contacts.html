@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}База{% endblock %}
+{% block crumb %}База номеров{% endblock %}
+{% block body %}
+<h1>База контактов</h1>
+
+{% if error %}<div class="note bad">{{ error }}</div>{% endif %}
+{% if loaded %}<div class="note">Загрузка завершена — итоги в таблице.</div>{% endif %}
+
+<div class="cards">
+  <div class="card"><div class="l">всего</div><div class="n">{{ summary.total }}</div></div>
+  <div class="card"><div class="l">можно звонить</div><div class="n">{{ summary.dialable }}</div></div>
+  <div class="card"><div class="l">стоп-лист</div><div class="n">{{ summary.do_not_call }}</div></div>
+  <div class="card"><div class="l">не отвечают</div><div class="n">{{ summary.never_answers }}</div></div>
+  <div class="card"><div class="l">неверные</div><div class="n">{{ summary.invalid }}</div></div>
+</div>
+
+<h2>Загрузки</h2>
+{% if batches %}
+<div class="panel scroll">
+<table>
+  <tr><th>Когда</th><th>Название</th><th>Строк</th><th>Загружено</th><th>Дублей</th><th>Отклонено</th><th>Зерно</th></tr>
+  {% for b in batches %}
+  <tr>
+    <td>{{ b.created_at.strftime('%d.%m %H:%M') }}</td>
+    <td>{{ b.name }}</td>
+    <td>{{ b.rows_total }}</td>
+    <td>{{ b.rows_loaded }}</td>
+    <td>{{ b.rows_duplicate }}</td>
+    <td>{% if b.rows_rejected %}<span class="tag bad">{{ b.rows_rejected }}</span>{% else %}0{% endif %}</td>
+    <td><code>{{ b.seed[:10] if b.seed }}</code></td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% else %}
+<div class="empty">Загрузок пока нет</div>
+{% endif %}
+
+<h2>Загрузить файл</h2>
+{% if not vault_ready %}
+<div class="note bad">Не заданы ключи шифрования номеров — загрузка недоступна.</div>
+{% else %}
+<form method="post" action="/contacts/upload" enctype="multipart/form-data" class="row">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+  <input type="file" name="file" accept=".csv,.txt" required>
+  <input name="name" placeholder="Название поставки">
+  <button>Загрузить</button>
+</form>
+<p class="sub">
+  CSV или список по номеру в строке. До {{ max_upload_mb }} МБ; для больших файлов —
+  <code>socmon contacts import</code>
+</p>
+{% endif %}
+{% endblock %}

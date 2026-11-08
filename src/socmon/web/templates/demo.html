@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Демо-опрос{% endblock %}
+{% block crumb %}Демо-опрос{% endblock %}
+{% block body %}
+<div style="max-width:640px;margin:0 auto">
+
+{% if unavailable %}
+  <h1>Демонстрация недоступна</h1>
+  <div class="note bad">Анкета не озвучена. Соберите озвучку и обновите страницу.</div>
+
+{% else %}
+  <h1>Как звучит опрос</h1>
+  <p><b>{{ voice_name }}</b> · <a href="/voices">Сравнить голоса</a></p>
+  <p class="sub">
+    Те же реплики и та же логика, что в настоящем звонке.
+    Ответы никуда не сохраняются.
+  </p>
+
+  {% if step.heard %}
+  <div class="panel" style="padding:12px 15px;margin-bottom:16px;font-size:14px">
+    <div style="color:var(--muted)">Вы ответили: <b style="color:var(--ink)">{{ step.heard }}</b></div>
+    {% if step.understood %}
+    <div style="color:var(--muted);margin-top:4px">Робот записал: {{ step.understood }}</div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {#
+    Строки подачи, а не голые реплики: отклик после ответа, пауза перед
+    вопросом, случайный дубль. Так демо звучит как звонок, а не как
+    проигрыватель файлов. Отклики рисуются мельче — это не вопросы.
+  #}
+  {% for line in step.lines %}
+  {% if line.kind == 'prompt' %}
+  <div class="panel" style="padding:16px 18px;margin-bottom:10px">
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <button class="ghost" style="flex:0 0 auto;padding:8px 12px"
+              data-audio="{{ line.media }}" data-gap="{{ line.gap_ms }}"
+              title="Прослушать">▶</button>
+      <div style="font-size:16px;line-height:1.5">{{ line.text }}</div>
+    </div>
+  </div>
+  {% else %}
+  <div style="display:flex;gap:10px;align-items:center;margin:0 0 8px 6px;color:var(--muted);font-size:14px">
+    <button class="ghost" style="flex:0 0 auto;padding:4px 9px;font-size:12px"
+            data-audio="{{ line.media }}" data-gap="{{ line.gap_ms }}"
+            title="Прослушать">▶</button>
+    <span style="font-style:italic">{{ line.text }}</span>
+  </div>
+  {% endif %}
+  {% endfor %}
+
+  {% if step.finished %}
+    <div class="note">
+      <b>Опрос завершён.</b>
+      Задано вопросов: {{ step.asked }}, получено ответов: {{ step.answered }}{%
+        if step.unrecognized %}, из них не разобрано: {{ step.unrecognized }}{% endif %}.
+      {% if step.asked and step.answered == step.asked and not step.unrecognized %}
+      Робот понял всё.
+      {% endif %}
+    </div>
+    <a href="/demo{% if voice %}?voice={{ voice }}{% endif %}"><button class="big">Пройти заново</button></a>
+    {% if me %}<a href="/" class="plain"><button class="ghost big">В кабинет</button></a>{% endif %}
+
+  {% else %}
+    {#
+      Варианты и свободный ответ — две отдельные формы, а не одна.
+
+      В одной форме оба поля назывались бы reply, и браузер отправлял бы
+      их вместе: нажатую кнопку и пустую строку ввода. Пустая приходит
+      последней и перебивает кнопку — робот получает молчание вместо
+      ответа, переспрашивает, а со второго раза уходит на прощание.
+      Нажимаешь «Согласен» — оказываешься на отказе.
+
+      Вторая ловушка того же происхождения: Enter в текстовом поле
+      нажимает первую кнопку формы. Напечатать «нет» и нажать Enter
+      значило бы ответить «да».
+    #}
+    {% if step.choices %}
+    <form method="post" action="/demo/answer" id="answer">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+      <input type="hidden" name="token" value="{{ token }}">
+      <input type="hidden" name="voice" value="{{ voice }}">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0">
+        {% for choice in step.choices %}
+        <button name="reply" value="{{ choice.value }}"
+                class="{{ 'ghost' if step.choices|length > 6 }}"
+                style="{{ 'min-width:52px' if step.choices|length > 6 }}">{{ choice.label }}</button>
+        {% endfor %}
+      </div>
+    </form>
+    {% endif %}
+
+    <form method="post" action="/demo/answer"
+          {% if not step.choices %}id="answer"{% endif %}>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+      <input type="hidden" name="token" value="{{ token }}">
+      <input type="hidden" name="voice" value="{{ voice }}">
+      <div class="row" style="margin-top:8px">
+        <input name="reply" autocomplete="off" style="flex:1 1 240px"
+               placeholder="{{ '…или ответьте своими словами' if step.choices
+                                else 'Ответьте своими словами' }}">
+        <button class="ghost">Ответить</button>
+      </div>
+    </form>
+
+    <p class="sub" style="margin-top:14px">
+      Попробуйте сказать «повторите», «затрудняюсь» или «больше не звоните» —
+      робот поймёт и поступит по-разному.
+    </p>
+  {% endif %}
+
+  <div class="note" style="margin-top:28px">
+    Телефонная версия, 8 кГц. На реальной линии качество также зависит от связи.
+    Реплики записаны заранее и не меняются от звонка к звонку.
+  </div>
+{% endif %}
+
+</div>
+<script nonce="{{ request.state.csp_nonce }}">
+  let current = null;
+  const voice = {{ voice | default('') | tojson }};
+  document.querySelectorAll('[data-audio]').forEach(btn => {
+    btn.addEventListener('click', () => play(btn.dataset.audio, btn));
+  });
+  function play(key, btn) {
+    if (current) { current.pause(); current = null; }
+    document.querySelectorAll('[data-audio]').forEach(b => b.textContent = '▶');
+    const audio = new Audio('/demo/audio/' + key + '?voice=' + encodeURIComponent(voice));
+    btn.textContent = '⏸';
+    audio.onended = () => { btn.textContent = '▶'; current = null; };
+    audio.play().catch(() => { btn.textContent = '▶'; });
+    current = audio;
+  }
+  // Проигрываем строки подряд при появлении — как в настоящем звонке:
+  // с той паузой перед каждой, которую выбрала подача.
+  window.addEventListener('DOMContentLoaded', () => {
+    const buttons = [...document.querySelectorAll('[data-audio]')];
+    if (!buttons.length) return;
+    let i = 0;
+    const next = () => {
+      if (i >= buttons.length) return;
+      const btn = buttons[i++];
+      const key = btn.dataset.audio;
+      const gap = parseInt(btn.dataset.gap || '0', 10);
+      setTimeout(() => {
+        const audio = new Audio('/demo/audio/' + key + '?voice=' + encodeURIComponent(voice));
+        btn.textContent = '⏸';
+        audio.onended = () => { btn.textContent = '▶'; next(); };
+        audio.play().catch(() => { btn.textContent = '▶'; });
+        current = audio;
+      }, gap);
+    };
+    next();
+  });
+</script>
+{% endblock %}

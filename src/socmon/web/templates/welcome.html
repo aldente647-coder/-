@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Соцмониторинг{% endblock %}
+{% block body %}
+<div style="max-width:560px;margin:8vh auto 0;text-align:center">
+
+  <h1 style="font-size:26px;margin-bottom:6px">Соцмониторинг</h1>
+  <p class="sub" style="margin:0 0 32px">
+    Телефонный социологический опрос с голосовым помощником
+  </p>
+
+  <div style="display:grid;gap:12px">
+
+    {% if demo_ready %}
+    <a href="/demo" class="plain">
+      <div class="panel" style="padding:22px 20px;text-align:left;cursor:pointer">
+        <div style="font-size:17px;font-weight:600;margin-bottom:4px">
+          Послушать опрос
+        </div>
+        <div style="color:var(--muted);font-size:14px">
+          Как это звучит в трубке. Вопросы читает тот же голос, что и в звонке.
+          Вход не нужен, ответы не сохраняются.
+        </div>
+      </div>
+    </a>
+    {% endif %}
+
+    <a href="/login" class="plain">
+      <div class="panel" style="padding:22px 20px;text-align:left;cursor:pointer">
+        <div style="font-size:17px;font-weight:600;margin-bottom:4px">
+          Войти в кабинет
+        </div>
+        <div style="color:var(--muted);font-size:14px">
+          Волны, анкеты, база номеров, аналитика и выгрузки.
+          Нужна учётная запись.
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+{% endblock %}

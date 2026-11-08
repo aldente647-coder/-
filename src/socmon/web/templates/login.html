@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block body %}
+<div style="max-width:340px;margin:80px auto">
+  <h1>Соцмониторинг</h1>
+  <p class="sub">Вход в кабинет</p>
+  {% if error %}<div class="note" style="border-color:var(--bad)">{{ error }}</div>{% endif %}
+  <form method="post" action="/login">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+    <input type="hidden" name="next" value="{{ next | default('/') }}">
+    <p><input name="login" placeholder="Логин" style="width:100%" autofocus></p>
+    <p><input name="password" type="password" placeholder="Пароль" style="width:100%"></p>
+    <button style="width:100%">Войти</button>
+  </form>
+  <p class="sub" style="text-align:center;margin-top:22px">
+    <a href="/demo" style="color:var(--accent)">Послушать, как звучит опрос</a><br>
+    <a href="/voices">Сравнить голоса</a><br>
+    <span style="font-size:13px">вход не нужен</span>
+  </p>
+</div>
+{% endblock %}

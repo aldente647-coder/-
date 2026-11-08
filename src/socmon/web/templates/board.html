@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Табло{% endblock %}
+{% block crumb %}Табло{% endblock %}
+{% block body %}
+<meta http-equiv="refresh" content="15">
+<h1>Табло</h1>
+<p class="sub">Обновляется каждые 15 секунд{% if wave %} · {{ wave.code }}, {{ wave.status.value }}{% endif %}</p>
+
+<form class="row" method="get">
+  <select name="wave">
+    {% for w in waves %}
+    <option value="{{ w.code }}" {% if wave and wave.code == w.code %}selected{% endif %}>{{ w.code }} — {{ w.name }}</option>
+    {% endfor %}
+  </select>
+  <button>Показать</button>
+</form>
+
+{% if not wave %}<div class="empty">Волн пока нет</div>
+{% else %}
+<h2>Сейчас на линиях</h2>
+<div class="cards">
+  {% for stage in live %}
+  <div class="card">
+    <div class="l">{{ stage.value | ru }}</div><div class="n">{{ stages.get(stage, 0) }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2>Итоги волны</h2>
+<div class="cards">
+  <div class="card"><div class="l">попыток</div><div class="n">{{ stats.attempts }}</div></div>
+  <div class="card"><div class="l">завершено</div><div class="n">{{ stats.finished }}</div></div>
+  <div class="card"><div class="l">интервью</div><div class="n">{{ stats.interviews }}</div></div>
+  <div class="card"><div class="l">валидных</div><div class="n">{{ stats.valid }}</div></div>
+</div>
+
+{% if dispositions %}
+<h2>Причины обрыва</h2>
+<div class="panel scroll">
+<table>
+  <tr><th>Причина</th><th>Звонков</th></tr>
+  {% for d, count in dispositions.items() %}
+  <tr>
+    <td>{{ d.value | ru }}</td>
+    <td>{{ count }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

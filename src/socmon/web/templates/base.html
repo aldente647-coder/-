@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Соцмониторинг{% endblock %}</title>
+<style>
+  /* Палитра намеренно своя: глубокая бирюза плюс тёплый янтарь.
+     Не золото с графитом из аналитических записок и не оранжевый
+     из референса — проект должен узнаваться отдельно от остальных. */
+  :root {
+    --deep:#17454f; --deep-2:#1d5462; --deep-3:#0f333b;
+    --amber:#e08a3c; --amber-soft:#fdf3e8; --amber-line:#f2ddc2;
+    --ink:#22303a; --muted:#6d7c87; --faint:#98a5ae;
+    --line:#e4e9ec; --line-soft:#eff2f4;
+    --bg:#f4f7f8; --card:#fff;
+    --ok:#2b7a58; --ok-soft:#e9f5ef;
+    --bad:#b03f2e; --bad-soft:#fbeeeb;
+    --warn:#9a6f18; --warn-soft:#fbf3e2;
+    --side:230px; --side-min:62px; --radius:8px;
+  }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+  a:focus-visible, button:focus-visible { outline:2px solid var(--amber);
+                                          outline-offset:2px; border-radius:6px }
+  .side a:focus-visible { outline-color:#fff; outline-offset:-2px }
+  html { -webkit-text-size-adjust:100% }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+         -webkit-font-smoothing:antialiased }
+  svg.i { width:17px; height:17px; flex:0 0 17px; stroke:currentColor;
+          stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round }
+
+  /* ------------------------------------------------------ боковое меню */
+  .side { position:fixed; inset:0 auto 0 0; width:var(--side); background:var(--deep);
+          display:flex; flex-direction:column; z-index:20; transition:width .18s }
+  .side .logo { display:flex; align-items:center; gap:11px; padding:13px 18px;
+                background:var(--deep-3); min-height:54px; color:#fff;
+                text-decoration:none; overflow:hidden }
+  .side .logo .mark { flex:0 0 26px; height:26px; border-radius:6px;
+                      background:var(--amber); display:grid; place-items:center;
+                      font-weight:700; font-size:13px; color:#fff }
+  .side .logo .txt { min-width:0 }
+  .side .logo .name { font-weight:650; font-size:14.5px; letter-spacing:.01em;
+                      white-space:nowrap }
+  .side .logo .kind { font-size:11px; color:rgba(255,255,255,.5); white-space:nowrap }
+
+  .side nav { flex:1; overflow-y:auto; overflow-x:hidden; padding:8px 0;
+              scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent }
+  .side nav::-webkit-scrollbar { width:6px }
+  .side nav::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); border-radius:3px }
+  .side nav a { display:flex; align-items:center; gap:12px; padding:8px 18px;
+                color:rgba(255,255,255,.72); text-decoration:none; font-size:14.5px;
+                white-space:nowrap; border-left:3px solid transparent }
+  .side nav a:hover { background:var(--deep-2); color:#fff }
+  .side nav a.on { background:var(--deep-2); color:#fff; border-left-color:var(--amber) }
+  .side nav .group { font-size:10.5px; text-transform:uppercase; letter-spacing:.08em;
+                     color:rgba(255,255,255,.35); padding:12px 21px 4px; font-weight:600;
+                     white-space:nowrap }
+  .side .foot { border-top:1px solid rgba(255,255,255,.09); padding:12px 18px;
+                display:flex; align-items:center; gap:10px; color:#fff; overflow:hidden }
+  .side .foot .ava { flex:0 0 30px; height:30px; border-radius:50%;
+                     background:var(--deep-2); display:grid; place-items:center;
+                     font-size:12.5px; font-weight:600 }
+  .side .foot .who { flex:1; min-width:0; font-size:12.5px; line-height:1.25 }
+  .side .foot .who b { display:block; font-weight:550; overflow:hidden;
+                       text-overflow:ellipsis; white-space:nowrap }
+  .side .foot .who span { color:rgba(255,255,255,.5); font-size:11.5px;
+                          display:block; overflow:hidden; text-overflow:ellipsis;
+                          white-space:nowrap }
+  .side .foot button { background:none; border:none; color:rgba(255,255,255,.6);
+                       cursor:pointer; padding:4px }
+  .side .foot button:hover { color:#fff }
+
+  .collapse { width:30px; height:30px; padding:0; flex:0 0 30px;
+              border-radius:50%; background:var(--amber); color:#fff; border:none;
+              cursor:pointer; display:grid; place-items:center }
+  .collapse:hover { filter:brightness(1.06) }
+
+  /* свёрнутое состояние — остаются только значки */
+  body.narrow .side { width:var(--side-min) }
+  body.narrow .side .logo .txt,
+  body.narrow .side nav a span,
+  body.narrow .side .group,
+  body.narrow .side .foot .who { display:none }
+  body.narrow .side .logo,
+  body.narrow .side nav a,
+  body.narrow .side .foot { justify-content:center; padding-left:0; padding-right:0 }
+  body.narrow .side nav a { border-left-width:0; border-right:3px solid transparent }
+  body.narrow .side nav a.on { border-right-color:var(--amber) }
+  body.narrow .wrap.shifted { margin-left:var(--side-min) }
+  body.narrow .collapse svg { transform:rotate(180deg) }
+
+  /* ---------------------------------------------------------- страница */
+  .wrap { min-height:100vh; transition:margin-left .18s }
+  .wrap.shifted { margin-left:var(--side) }
+  .topbar { display:flex; align-items:center; gap:12px; background:var(--card);
+            border-bottom:1px solid var(--line); padding:0 22px; min-height:58px;
+            position:sticky; top:0; z-index:15 }
+  .topbar .burger { display:none; background:none; border:1px solid var(--line);
+                    border-radius:7px; padding:6px 10px; color:var(--ink) }
+  .crumbs { font-size:13.5px; color:var(--muted) }
+  .crumbs a { color:var(--amber); text-decoration:none }
+  .crumbs span { margin:0 7px; color:var(--faint) }
+  main { max-width:1120px; padding:24px 26px 60px }
+  .wrap:not(.shifted) main { margin:0 auto }
+
+  h1 { font-size:21px; margin:0 0 18px; font-weight:650; letter-spacing:-.01em }
+  h2 { font-size:16px; margin:28px 0 12px; font-weight:600 }
+  .sub { color:var(--muted); font-size:13.5px; margin:-12px 0 18px }
+
+  /* ------------------------------------------------- карточки-показатели */
+  .cards { display:grid; gap:12px; margin-bottom:22px;
+           grid-template-columns:repeat(auto-fit,minmax(180px,1fr)) }
+  .card { background:var(--card); border:1px solid var(--line);
+          border-top:3px solid var(--amber); border-radius:var(--radius);
+          padding:14px 16px 12px }
+  .card .l { font-size:10.5px; text-transform:uppercase; letter-spacing:.07em;
+             color:var(--faint); font-weight:600; margin-bottom:6px }
+  .card .n { font-size:27px; font-weight:650; line-height:1.1; letter-spacing:-.02em }
+  .card.ok { border-top-color:var(--ok) }
+  .card.bad { border-top-color:var(--bad) }
+  .card.calm { border-top-color:var(--deep-2) }
+
+  .panel { background:var(--card); border:1px solid var(--line);
+           border-radius:var(--radius); overflow:hidden }
+  .scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; position:relative }
+  .scroll.more::after { content:''; position:absolute; top:0; bottom:0; right:0;
+                        width:26px; pointer-events:none;
+                        background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95)) }
+  .scroll::-webkit-scrollbar { height:7px }
+  .scroll::-webkit-scrollbar-thumb { background:var(--line); border-radius:4px }
+  table { width:100%; border-collapse:collapse; background:var(--card) }
+  th,td { text-align:left; padding:11px 15px; border-bottom:1px solid var(--line-soft);
+          font-size:13.8px; white-space:nowrap }
+  th { background:var(--amber-soft); font-weight:600; color:#8a6329; font-size:11.5px;
+       text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--amber-line) }
+  tr:last-child td { border-bottom:none }
+  tbody tr:hover td { background:#fafcfc }
+  tr.flag td { background:var(--bad-soft) }
+  tr.flag:hover td { background:#f8e6e2 }
+
+  /* ------------------------------------------------------------- формы */
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:18px }
+  select,input,button { font:inherit; font-size:14px; padding:9px 13px;
+                        border:1px solid var(--line); border-radius:7px;
+                        background:var(--card); color:var(--ink) }
+  select:focus,input:focus { outline:none; border-color:var(--amber);
+                             box-shadow:0 0 0 3px var(--amber-soft) }
+  input[type=file] { padding:7px; border-style:dashed }
+  button { background:var(--amber); color:#fff; border-color:var(--amber);
+           cursor:pointer; font-weight:500 }
+  button:hover { filter:brightness(1.05) }
+  button.ghost { background:var(--card); color:var(--ink); border-color:var(--line) }
+  button.ghost:hover { background:var(--line-soft); filter:none }
+  button.big { padding:12px 22px; font-size:15px }
+  a.plain { color:inherit; text-decoration:none }
+
+  .tag { display:inline-block; padding:2px 9px; border-radius:20px; font-size:12px;
+         background:var(--line-soft); color:var(--muted) }
+  .tag.ok { background:var(--ok-soft); color:var(--ok) }
+  .tag.bad { background:var(--bad-soft); color:var(--bad) }
+  .tag.warn { background:var(--warn-soft); color:var(--warn) }
+
+  .note { background:var(--amber-soft); border:1px solid var(--amber-line);
+          border-radius:7px; padding:12px 15px; margin:16px 0;
+          font-size:13.8px; color:#7d5a24 }
+  .note.bad { background:var(--bad-soft); border-color:#eed5cf; color:#8d3527 }
+  .empty { color:var(--faint); padding:44px 20px; text-align:center;
+           background:var(--card); border:1px solid var(--line); border-radius:var(--radius) }
+  code { background:var(--line-soft); padding:2px 6px; border-radius:5px;
+         font-size:12.5px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+  .bar-chart { background:var(--line-soft); border-radius:4px; height:15px; min-width:60px }
+  .bar-chart > div { background:var(--amber); height:15px; border-radius:4px }
+
+  /* ---------------------------------------------------------- телефоны */
+  @media (max-width:900px) {
+    .side { transform:translateX(-100%); transition:transform .2s; width:var(--side) }
+    .side.open { transform:none }
+    .collapse { display:none }
+    .wrap.shifted { margin-left:0 }
+    body.narrow .wrap.shifted { margin-left:0 }
+    .topbar .burger { display:block }
+    .veil { display:none; position:fixed; inset:0; background:rgba(23,69,79,.34); z-index:19 }
+    .veil.on { display:block }
+    main { padding:16px 13px 48px }
+    h1 { font-size:19px }
+    th,td { padding:10px 12px; font-size:13px }
+    .cards { grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+    .card .n { font-size:23px }
+    .row > * { flex:1 1 auto; min-width:140px }
+  }
+</style>
+</head>
+<body>
+<svg style="display:none">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10l9-7 9 7v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="i-live" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/></symbol>
+  <symbol id="i-form" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-base" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+  <symbol id="i-call" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6A19.8 19.8 0 012 4.2 2 2 0 014 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.4 2.1L8 9.8a16 16 0 006 6l1.2-1.2a2 2 0 012.1-.5c.9.4 1.8.6 2.8.8A2 2 0 0122 17z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0l-8-8V4h8.6l9.4 9.4a2 2 0 010 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path d="M15 7a4 4 0 11-3.5 5.9L7 17.4 4.6 15 9 10.5A4 4 0 0115 7z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+</svg>
+
+{% macro item(href, icon, title) %}
+<a href="{{ href }}" title="{{ title }}"><svg class="i"><use href="#{{ icon }}"/></svg><span>{{ title }}</span></a>
+{% endmacro %}
+
+{% if me %}
+<aside class="side" id="side">
+  <a href="/" class="logo">
+    <span class="mark">СМ</span>
+    <span class="txt">
+      <span class="name">Соцмониторинг</span>
+      <div class="kind">телефонный опрос</div>
+    </span>
+  </a>
+  <nav>
+    {% if me.can(Permission.VIEW_DASHBOARD) %}
+      {{ item('/', 'i-home', 'Обзор') }}
+      {{ item('/board', 'i-live', 'Табло') }}
+    {% endif %}
+
+    {% if me.can(Permission.MANAGE_WAVE) or me.can(Permission.MANAGE_QUESTIONNAIRE)
+          or me.can(Permission.MANAGE_CONTACTS) %}
+    <div class="group">Подготовка</div>
+      {% if me.can(Permission.MANAGE_WAVE) %}{{ item('/waves', 'i-wave', 'Волны') }}{% endif %}
+      {% if me.can(Permission.MANAGE_QUESTIONNAIRE) %}{{ item('/questionnaires', 'i-form', 'Анкеты') }}{% endif %}
+      {% if me.can(Permission.MANAGE_CONTACTS) %}{{ item('/contacts', 'i-base', 'База номеров') }}{% endif %}
+    {% endif %}
+
+    {% if me.can(Permission.VIEW_INTERVIEWS) or me.can(Permission.MANAGE_DIALLING) %}
+    <div class="group">Поле</div>
+      {% if me.can(Permission.MANAGE_DIALLING) %}{{ item('/dialling', 'i-call', 'Обзвон') }}{% endif %}
+      {% if me.can(Permission.VIEW_INTERVIEWS) %}{{ item('/interviews', 'i-list', 'Интервью') }}{% endif %}
+    {% endif %}
+
+    {% if me.can(Permission.VIEW_ANALYTICS) or me.can(Permission.REVIEW_CODING)
+          or me.can(Permission.EXPORT_DATA) %}
+    <div class="group">Результаты</div>
+      {% if me.can(Permission.VIEW_ANALYTICS) %}{{ item('/analytics', 'i-chart', 'Аналитика') }}{% endif %}
+      {% if me.can(Permission.REVIEW_CODING) %}{{ item('/coding', 'i-tag', 'Разбор ответов') }}{% endif %}
+      {% if me.can(Permission.EXPORT_DATA) %}{{ item('/exports', 'i-down', 'Выгрузки') }}{% endif %}
+    {% endif %}
+
+    {% if me.can(Permission.VIEW_AUDIT) or me.can(Permission.MANAGE_USERS) %}
+    <div class="group">Управление</div>
+      {% if me.can(Permission.VIEW_AUDIT) %}{{ item('/audit', 'i-log', 'Журнал') }}{% endif %}
+      {% if me.can(Permission.MANAGE_USERS) %}{{ item('/users', 'i-key', 'Доступ') }}{% endif %}
+    {% endif %}
+
+    <div class="group">Показать</div>
+    {{ item('/demo', 'i-play', 'Демо-опрос') }}
+    {{ item('/voices', 'i-play', 'Варианты голоса') }}
+  </nav>
+  <div class="foot">
+    <span class="ava">{{ me.full_name[:1]|upper }}</span>
+    <span class="who"><b>{{ me.full_name }}</b><span>{{ ROLE_TITLES[me.role] }}</span></span>
+    <form method="post" action="/logout">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+      <button title="Выйти"><svg class="i"><use href="#i-out"/></svg></button>
+    </form>
+  </div>
+</aside>
+<div class="veil" id="veil" data-action="drawer"></div>
+{% endif %}
+
+<div class="wrap{% if me %} shifted{% endif %}">
+  {% if me %}
+  <div class="topbar">
+    <button class="burger" data-action="drawer">☰</button>
+    <button class="collapse" data-action="collapse" title="Свернуть меню">
+      <svg class="i" style="width:14px;height:14px"><use href="#i-left"/></svg>
+    </button>
+    <div class="crumbs">
+      <a href="/">Главная</a><span>/</span>{% block crumb %}{{ self.title() }}{% endblock %}
+    </div>
+  </div>
+  {% endif %}
+  <main>{% block body %}{% endblock %}</main>
+</div>
+
+<script nonce="{{ request.state.csp_nonce }}">
+  document.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => btn.dataset.action === 'drawer' ? drawer() : collapse());
+  });
+  function drawer() {
+    document.getElementById('side').classList.toggle('open');
+    document.getElementById('veil').classList.toggle('on');
+  }
+  function collapse() {
+    document.body.classList.toggle('narrow');
+    localStorage.setItem('side-narrow', document.body.classList.contains('narrow') ? '1' : '');
+  }
+  if (localStorage.getItem('side-narrow')) document.body.classList.add('narrow');
+  // Подсказка о боковой прокрутке: показываем, пока справа что-то осталось.
+  function scrollHints() {
+    document.querySelectorAll('.scroll').forEach(box => {
+      const more = box.scrollWidth - box.clientWidth - box.scrollLeft > 4;
+      box.classList.toggle('more', more);
+      if (!box.dataset.bound) {
+        box.dataset.bound = '1';
+        box.addEventListener('scroll', scrollHints, {passive:true});
+      }
+    });
+  }
+  window.addEventListener('load', scrollHints);
+  window.addEventListener('resize', scrollHints);
+  scrollHints();
+
+  const here = location.pathname;
+  document.querySelectorAll('.side nav a').forEach(a => {
+    if (a.getAttribute('href') === here) a.classList.add('on');
+  });
+</script>
+</body>
+</html>

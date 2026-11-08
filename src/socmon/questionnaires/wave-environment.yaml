@@ -1,0 +1,34 @@
+# Мониторинг: волна с модулем «Среда и инфраструктура»
+#
+# Ядро, переменный блок и модуль Д11-Д18, Д25:
+# благоустройство, жильё, дороги, транспорт, экология, ТБО, ЖКХ, спорт.
+#
+# Ядро и переменный блок подключаются теми же файлами, что и в остальных
+# волнах: формулировки обязаны совпадать посимвольно, иначе ряды §3.1
+# рвутся. Отличается только последний модуль.
+
+name: "Мониторинг: волна с модулем «Среда и инфраструктура»"
+wave: "environment"
+
+policy:
+  max_repeats: 1                      # ТЗ §8.1: переспросить не более одного раза
+  silence_timeout_sec: 6.0
+  barge_in_delay_sec: 3.0
+  max_unrecognized_before_abort: 3
+  target_duration_sec: 600            # ТЗ §3.3
+
+terminals:
+  dont_call_request: end_dont_call
+  callback_request: end_callback
+  refusal_before: end_refusal_before
+  refusal_during: end_refusal
+  transferred_to_operator: end_operator
+  speech_unusable: end_speech
+
+modules:
+  - fragments/00-intro.yaml
+  - fragments/10-core.yaml
+  - fragments/20-variable.yaml
+  - fragments/80-demography.yaml
+  - fragments/31-environment.yaml
+  - fragments/90-endings.yaml

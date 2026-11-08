@@ -1,0 +1,213 @@
+# Нестандартные ответы: как робот обязан себя вести, когда человек отвечает
+# не по карточке. Каждый случай — реплика на узле анкеты и ожидание:
+#
+#   code: N          записан код N
+#   probe            уточнение: «и всё же, если выбирать» (повтор с пояснением)
+#   repeat           повтор вопроса: не разобрали
+#   asked_repeat     повтор по просьбе («повторите», «какие варианты»)
+#   who              объяснение, кто звонит, и повтор вопроса
+#   dont_know        записано «затрудняюсь» (97)
+#   refused          записан отказ (98)
+#   unrecognized     записано «не разобрал» (96)
+#   open             открытый ответ записан текстом
+#   end:<исход>      интервью завершено с этим исходом
+#
+# `then` — вторая реплика на тот же вопрос после переспроса; `code` к ней.
+
+- title: отрицание перед вариантом — не «доволен», а уклончиво
+  node: q01_region
+  said: не очень доволен
+  expect: probe
+  then: ну скорее не доволен
+  code: 2
+
+- title: «не то чтобы» — тоже уклончиво
+  node: q01_region
+  said: не то чтобы доволен
+  expect: probe
+
+- title: середина там, где её не предлагали
+  node: q01_region
+  said: средне
+  expect: probe
+  then: ладно, доволен
+  code: 1
+
+- title: уклончиво дважды — «затрудняюсь», а не «не разобрал»
+  node: q01_region
+  said: так себе
+  expect: probe
+  then: ну такое, по-разному
+  code: 97
+
+- title: и да и нет — уточняем
+  node: q01_region
+  said: и да и нет
+  expect: probe
+
+- title: передумал по ходу — считается последнее
+  node: q01_region
+  said: доволен, хотя нет, не доволен
+  expect: code
+  code: 2
+
+- title: передумал в другую сторону
+  node: q02_dynamics
+  said: ухудшилась... хотя нет, скорее не изменилась
+  expect: code
+  code: 2
+
+- title: с вводными словами
+  node: q01_region
+  said: ну как вам сказать, в целом-то доволен, конечно
+  expect: code
+  code: 1
+
+- title: ответ спрятан в длинной реплике
+  node: q08_safety
+  said: у нас тут всякое бывает, но в целом я скорее в безопасности себя чувствую
+  expect: code
+  code: 1
+
+- title: просит варианты
+  node: q07_material
+  said: а какие варианты?
+  expect: asked_repeat
+
+- title: не понял
+  node: q07_material
+  said: не понял
+  expect: asked_repeat
+
+- title: спрашивает, кто звонит
+  node: q01_region
+  said: а вы вообще кто такие?
+  expect: who
+  then: доволен
+  code: 1
+
+- title: откуда номер
+  node: q04_president
+  said: откуда у вас мой номер
+  expect: who
+
+- title: просит перезвонить
+  node: q03a_federal
+  said: я за рулём, перезвоните
+  expect: end:callback_request
+
+- title: не звонить — стоп-лист
+  node: q05_head
+  said: не звоните мне больше никогда
+  expect: end:dont_call_request
+
+- title: требует человека
+  node: q07_material
+  said: дайте живого человека
+  expect: end:transferred_to_operator
+
+- title: отказ от одного вопроса — не от интервью
+  node: q16_svo
+  said: не буду отвечать на это
+  expect: refused
+
+- title: «затрудняюсь» — код 97
+  node: q10_health
+  said: даже не знаю, трудно сказать
+  expect: dont_know
+
+- title: шум распознавания — переспрос, потом «не разобрал»
+  node: q01_region
+  said: шшш пррр кхм
+  expect: repeat
+  then: гхм кхм
+  code: 96
+
+- title: молчание — переспрос
+  node: q02_dynamics
+  said: ""
+  expect: repeat
+
+- title: «да» на вопрос без «да» — не ответ
+  node: q02_dynamics
+  said: да
+  expect: repeat
+
+- title: возраст словами с лишним
+  node: d_age
+  said: мне сорок с лишним
+  expect: code
+  code: 40
+
+- title: возраст с частицей
+  node: d_age
+  said: ну шестьдесят три уже
+  expect: code
+  code: 63
+
+- title: возраст не скажу
+  node: d_age
+  said: не скажу
+  expect: refused
+
+- title: два числа — не ответ
+  node: d_age
+  said: то ли сорок пять, то ли сорок шесть
+  expect: repeat
+
+- title: несколько источников, по-простому
+  node: q14_sources
+  said: в основном телек, ну и в телеге читаю
+  expect: code
+  code: 1
+
+- title: «никому не доверяю» отменяет названное
+  node: p02_media_trust
+  said: местным, хотя вообще-то никому не доверяю
+  expect: code
+  code: 10
+
+- title: открытый — записан как есть, даже если коротко
+  node: q11_problems
+  said: цены
+  expect: open
+
+- title: открытый — «нет проблем» тоже ответ
+  node: q11_problems
+  said: да нет у нас проблем особых
+  expect: open
+
+- title: согласие с оговоркой
+  node: consent
+  said: ну давайте, только быстро
+  expect: code
+  code: 1
+
+- title: согласие уклончивое — уточняем, не считаем за «да»
+  node: consent
+  said: не знаю даже, ну может быть
+  expect: dont_know_consent
+
+- title: фильтр возраста — «мне семнадцать»
+  node: screen_age
+  said: нет, мне семнадцать
+  expect: end:ineligible_age
+
+- title: перечислил вариант своими словами
+  node: q07_material
+  said: только на еду и хватает, на самое необходимое
+  expect: code
+  code: 3
+
+- title: отрицание с усилителем в перечислении
+  node: q10_health
+  said: не очень хорошее
+  expect: probe
+  then: удовлетворительное
+  code: 2
+
+- title: полное отрицание варианта, который есть в списке
+  node: q03b_republic
+  said: нет, не доверяю
+  expect: code
+  code: 2

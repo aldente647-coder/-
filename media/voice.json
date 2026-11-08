@@ -1,0 +1,680 @@
+{
+  "entries": {
+    "consent_v1": {
+      "audio_key": "consent_v1",
+      "duration_sec": 1.975,
+      "file": "consent_v1.wav",
+      "node_id": "consent",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "ddb54fb2b58e1975"
+    },
+    "d01_filter_v1": {
+      "audio_key": "d01_filter_v1",
+      "duration_sec": 4.537,
+      "file": "d01_filter_v1.wav",
+      "node_id": "d01_filter",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "70a8ef87eb8c0317"
+    },
+    "d01_preschool_v1": {
+      "audio_key": "d01_preschool_v1",
+      "duration_sec": 7.475,
+      "file": "d01_preschool_v1.wav",
+      "node_id": "d01_preschool",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "93b3e2f16bf844ed"
+    },
+    "d02_filter_v1": {
+      "audio_key": "d02_filter_v1",
+      "duration_sec": 3.112,
+      "file": "d02_filter_v1.wav",
+      "node_id": "d02_filter",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "2332fe91e516e52a"
+    },
+    "d02_school_v1": {
+      "audio_key": "d02_school_v1",
+      "duration_sec": 4.625,
+      "file": "d02_school_v1.wav",
+      "node_id": "d02_school",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "b8c4e6d833d27cd0"
+    },
+    "d03_college_v1": {
+      "audio_key": "d03_college_v1",
+      "duration_sec": 7.425,
+      "file": "d03_college_v1.wav",
+      "node_id": "d03_college",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "dd91f1c1dcf99891"
+    },
+    "d04_university_v1": {
+      "audio_key": "d04_university_v1",
+      "duration_sec": 4.575,
+      "file": "d04_university_v1.wav",
+      "node_id": "d04_university",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "060e058c4f2651b8"
+    },
+    "d05_filter_v1": {
+      "audio_key": "d05_filter_v1",
+      "duration_sec": 5.625,
+      "file": "d05_filter_v1.wav",
+      "node_id": "d05_filter",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "afeb9fb219a4c778"
+    },
+    "d05_medicine_v1": {
+      "audio_key": "d05_medicine_v1",
+      "duration_sec": 4.55,
+      "file": "d05_medicine_v1.wav",
+      "node_id": "d05_medicine",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "978f5858f17197ec"
+    },
+    "d06_youth_region_v1": {
+      "audio_key": "d06_youth_region_v1",
+      "duration_sec": 11.875,
+      "file": "d06_youth_region_v1.wav",
+      "node_id": "d06_youth_region",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "6dee2d6b51674400"
+    },
+    "d07_youth_russia_v1": {
+      "audio_key": "d07_youth_russia_v1",
+      "duration_sec": 7.412,
+      "file": "d07_youth_russia_v1.wav",
+      "node_id": "d07_youth_russia",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "c2106dbaa45005f0"
+    },
+    "d08_culture_v1": {
+      "audio_key": "d08_culture_v1",
+      "duration_sec": 8.113,
+      "file": "d08_culture_v1.wav",
+      "node_id": "d08_culture",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "00ee145c8686e5ad"
+    },
+    "d09_childbirth_v1": {
+      "audio_key": "d09_childbirth_v1",
+      "duration_sec": 4.95,
+      "file": "d09_childbirth_v1.wav",
+      "node_id": "d09_childbirth",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "56f4e957118f496a"
+    },
+    "d10_children_conditions_v1": {
+      "audio_key": "d10_children_conditions_v1",
+      "duration_sec": 10.5,
+      "file": "d10_children_conditions_v1.wav",
+      "node_id": "d10_children_conditions",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "1754d23060b32860"
+    },
+    "d11_amenities_v1": {
+      "audio_key": "d11_amenities_v1",
+      "duration_sec": 7.263,
+      "file": "d11_amenities_v1.wav",
+      "node_id": "d11_amenities",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "2be94d1a0ecd95cb"
+    },
+    "d12_housing_v1": {
+      "audio_key": "d12_housing_v1",
+      "duration_sec": 9.287,
+      "file": "d12_housing_v1.wav",
+      "node_id": "d12_housing",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "64de44e565206f11"
+    },
+    "d13_roads_v1": {
+      "audio_key": "d13_roads_v1",
+      "duration_sec": 3.725,
+      "file": "d13_roads_v1.wav",
+      "node_id": "d13_roads",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "6f108c304aea6827"
+    },
+    "d14_city_transport_v1": {
+      "audio_key": "d14_city_transport_v1",
+      "duration_sec": 5.188,
+      "file": "d14_city_transport_v1.wav",
+      "node_id": "d14_city_transport",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "306ab42e5aa61eb4"
+    },
+    "d15_intercity_transport_v1": {
+      "audio_key": "d15_intercity_transport_v1",
+      "duration_sec": 4.975,
+      "file": "d15_intercity_transport_v1.wav",
+      "node_id": "d15_intercity_transport",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "b2babbea66123c32"
+    },
+    "d16_ecology_v1": {
+      "audio_key": "d16_ecology_v1",
+      "duration_sec": 6.987,
+      "file": "d16_ecology_v1.wav",
+      "node_id": "d16_ecology",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "89a09c1cea497813"
+    },
+    "d17_waste_v1": {
+      "audio_key": "d17_waste_v1",
+      "duration_sec": 6.513,
+      "file": "d17_waste_v1.wav",
+      "node_id": "d17_waste",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "fbc3f714c35011e0"
+    },
+    "d18_utilities_v1": {
+      "audio_key": "d18_utilities_v1",
+      "duration_sec": 7.987,
+      "file": "d18_utilities_v1.wav",
+      "node_id": "d18_utilities",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "3b4b978ab6de602f"
+    },
+    "d19_officials_v1": {
+      "audio_key": "d19_officials_v1",
+      "duration_sec": 9.225,
+      "file": "d19_officials_v1.wav",
+      "node_id": "d19_officials",
+      "rendered_at": "2026-08-24T11:59:54.926762+00:00",
+      "text_hash": "b061284be9518dda"
+    },
+    "d20_egov_v1": {
+      "audio_key": "d20_egov_v1",
+      "duration_sec": 5.263,
+      "file": "d20_egov_v1.wav",
+      "node_id": "d20_egov",
+      "rendered_at": "2026-08-24T11:59:54.926762+00:00",
+      "text_hash": "371476403736f9ea"
+    },
+    "d21_communications_v1": {
+      "audio_key": "d21_communications_v1",
+      "duration_sec": 5.1,
+      "file": "d21_communications_v1.wav",
+      "node_id": "d21_communications",
+      "rendered_at": "2026-08-24T11:59:54.926762+00:00",
+      "text_hash": "1f9d1d03e9655f72"
+    },
+    "d22_tourism_v1": {
+      "audio_key": "d22_tourism_v1",
+      "duration_sec": 9.3,
+      "file": "d22_tourism_v1.wav",
+      "node_id": "d22_tourism",
+      "rendered_at": "2026-08-24T11:59:54.926762+00:00",
+      "text_hash": "f99c15dab7b2cfab"
+    },
+    "d23_business_v1": {
+      "audio_key": "d23_business_v1",
+      "duration_sec": 9.287,
+      "file": "d23_business_v1.wav",
+      "node_id": "d23_business",
+      "rendered_at": "2026-08-24T11:59:54.926762+00:00",
+      "text_hash": "500f9c84255c8140"
+    },
+    "d24_retraining_v1": {
+      "audio_key": "d24_retraining_v1",
+      "duration_sec": 8.4,
+      "file": "d24_retraining_v1.wav",
+      "node_id": "d24_retraining",
+      "rendered_at": "2026-08-24T11:59:54.926762+00:00",
+      "text_hash": "8d487f021cdad0ba"
+    },
+    "d25_sport_v1": {
+      "audio_key": "d25_sport_v1",
+      "duration_sec": 9.912,
+      "file": "d25_sport_v1.wav",
+      "node_id": "d25_sport",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "e7719ca9eaea11df"
+    },
+    "d26_volunteering_v1": {
+      "audio_key": "d26_volunteering_v1",
+      "duration_sec": 13.175,
+      "file": "d26_volunteering_v1.wav",
+      "node_id": "d26_volunteering",
+      "rendered_at": "2026-08-24T11:59:54.926762+00:00",
+      "text_hash": "b289f22ec3b39ca5"
+    },
+    "d_age_v1": {
+      "audio_key": "d_age_v1",
+      "duration_sec": 1.512,
+      "file": "d_age_v1.wav",
+      "node_id": "d_age",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "005cc7b29f35ad23"
+    },
+    "d_education_v1": {
+      "audio_key": "d_education_v1",
+      "duration_sec": 6.062,
+      "file": "d_education_v1.wav",
+      "node_id": "d_education",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "20be13ebf0254d38"
+    },
+    "d_employment_v1": {
+      "audio_key": "d_employment_v1",
+      "duration_sec": 5.175,
+      "file": "d_employment_v1.wav",
+      "node_id": "d_employment",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "3e1b712d3b655178"
+    },
+    "d_gender_v1": {
+      "audio_key": "d_gender_v1",
+      "duration_sec": 2.325,
+      "file": "d_gender_v1.wav",
+      "node_id": "d_gender",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "52be8203f04e3ee0"
+    },
+    "d_nationality_v1": {
+      "audio_key": "d_nationality_v1",
+      "duration_sec": 2.462,
+      "file": "d_nationality_v1.wav",
+      "node_id": "d_nationality",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "e7c5089eec63b9dd"
+    },
+    "d_settlement_v1": {
+      "audio_key": "d_settlement_v1",
+      "duration_sec": 3.013,
+      "file": "d_settlement_v1.wav",
+      "node_id": "d_settlement",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "22dcff4d3a3eeb6a"
+    },
+    "d_svo_family_v1": {
+      "audio_key": "d_svo_family_v1",
+      "duration_sec": 4.725,
+      "file": "d_svo_family_v1.wav",
+      "node_id": "d_svo_family",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "3aafe3b4da02d692"
+    },
+    "d_svo_participant_v1": {
+      "audio_key": "d_svo_participant_v1",
+      "duration_sec": 3.462,
+      "file": "d_svo_participant_v1.wav",
+      "node_id": "d_svo_participant",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "6569a55277be7aaf"
+    },
+    "d_veteran_v1": {
+      "audio_key": "d_veteran_v1",
+      "duration_sec": 2.562,
+      "file": "d_veteran_v1.wav",
+      "node_id": "d_veteran",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "c531d8f8ca67b8ce"
+    },
+    "end_callback_v1": {
+      "audio_key": "end_callback_v1",
+      "duration_sec": 3.737,
+      "file": "end_callback_v1.wav",
+      "node_id": "end_callback",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "aefae311070087cc"
+    },
+    "end_dont_call_v1": {
+      "audio_key": "end_dont_call_v1",
+      "duration_sec": 5.825,
+      "file": "end_dont_call_v1.wav",
+      "node_id": "end_dont_call",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "0e52782c86d12ec8"
+    },
+    "end_ineligible_age_v1": {
+      "audio_key": "end_ineligible_age_v1",
+      "duration_sec": 4.55,
+      "file": "end_ineligible_age_v1.wav",
+      "node_id": "end_ineligible_age",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "0f9090bc049756ba"
+    },
+    "end_ineligible_territory_v1": {
+      "audio_key": "end_ineligible_territory_v1",
+      "duration_sec": 4.725,
+      "file": "end_ineligible_territory_v1.wav",
+      "node_id": "end_ineligible_territory",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "7ad9e3150cf2a904"
+    },
+    "end_no_consent_v1": {
+      "audio_key": "end_no_consent_v1",
+      "duration_sec": 3.612,
+      "file": "end_no_consent_v1.wav",
+      "node_id": "end_no_consent",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "121c777b5bcb2e12"
+    },
+    "end_operator_v1": {
+      "audio_key": "end_operator_v1",
+      "duration_sec": 3.362,
+      "file": "end_operator_v1.wav",
+      "node_id": "end_operator",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "5c5a7f579db3a8a6"
+    },
+    "end_refusal_before_v1": {
+      "audio_key": "end_refusal_before_v1",
+      "duration_sec": 2.938,
+      "file": "end_refusal_before_v1.wav",
+      "node_id": "end_refusal_before",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "286c29f1f8aebdb4"
+    },
+    "end_refusal_v1": {
+      "audio_key": "end_refusal_v1",
+      "duration_sec": 3.087,
+      "file": "end_refusal_v1.wav",
+      "node_id": "end_refusal",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "20cacc39e97a2e9e"
+    },
+    "end_speech_v1": {
+      "audio_key": "end_speech_v1",
+      "duration_sec": 5.15,
+      "file": "end_speech_v1.wav",
+      "node_id": "end_speech",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "a7efb8e016bb005d"
+    },
+    "intro_v1": {
+      "audio_key": "intro_v1",
+      "duration_sec": 26.637,
+      "file": "intro_v1.wav",
+      "node_id": "intro",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "d219cb41ee2d53de"
+    },
+    "mod_env_intro_v1": {
+      "audio_key": "mod_env_intro_v1",
+      "duration_sec": 14.912,
+      "file": "mod_env_intro_v1.wav",
+      "node_id": "mod_env_intro",
+      "rendered_at": "2026-08-24T12:11:57.128480+00:00",
+      "text_hash": "d67b4d3c3d504fc4"
+    },
+    "mod_gov_intro_v1": {
+      "audio_key": "mod_gov_intro_v1",
+      "duration_sec": 15.162,
+      "file": "mod_gov_intro_v1.wav",
+      "node_id": "mod_gov_intro",
+      "rendered_at": "2026-08-24T11:59:54.926762+00:00",
+      "text_hash": "64e5046ad2c1f949"
+    },
+    "mod_social_intro_v1": {
+      "audio_key": "mod_social_intro_v1",
+      "duration_sec": 14.35,
+      "file": "mod_social_intro_v1.wav",
+      "node_id": "mod_social_intro",
+      "rendered_at": "2026-08-24T12:11:53.973178+00:00",
+      "text_hash": "33d4510f8804dd56"
+    },
+    "outro_v1": {
+      "audio_key": "outro_v1",
+      "duration_sec": 3.138,
+      "file": "outro_v1.wav",
+      "node_id": "outro",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "4f618584fa7f974e"
+    },
+    "p01_intro_v1": {
+      "audio_key": "p01_intro_v1",
+      "duration_sec": 17.425,
+      "file": "p01_intro_v1.wav",
+      "node_id": "p01_intro",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "a44520e4253f6464"
+    },
+    "p01a_relatives_v1": {
+      "audio_key": "p01a_relatives_v1",
+      "duration_sec": 4.475,
+      "file": "p01a_relatives_v1.wav",
+      "node_id": "p01a_relatives",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "c1095b1ff5d0d260"
+    },
+    "p01b_tv_v1": {
+      "audio_key": "p01b_tv_v1",
+      "duration_sec": 3.6,
+      "file": "p01b_tv_v1.wav",
+      "node_id": "p01b_tv",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "d7ad9c6631c4c3f8"
+    },
+    "p01c_social_v1": {
+      "audio_key": "p01c_social_v1",
+      "duration_sec": 4.912,
+      "file": "p01c_social_v1.wav",
+      "node_id": "p01c_social",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "1098a51f423a9fbb"
+    },
+    "p02_media_trust_v1": {
+      "audio_key": "p02_media_trust_v1",
+      "duration_sec": 21.675,
+      "file": "p02_media_trust_v1.wav",
+      "node_id": "p02_media_trust",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "b9bd84a73694beed"
+    },
+    "p03_info_gaps_v1": {
+      "audio_key": "p03_info_gaps_v1",
+      "duration_sec": 4.4,
+      "file": "p03_info_gaps_v1.wav",
+      "node_id": "p03_info_gaps",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "653f5471b943abed"
+    },
+    "p04_tv_frequency_v1": {
+      "audio_key": "p04_tv_frequency_v1",
+      "duration_sec": 5.588,
+      "file": "p04_tv_frequency_v1.wav",
+      "node_id": "p04_tv_frequency",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "eaea41030875a468"
+    },
+    "p05_tv_less_reason_v1": {
+      "audio_key": "p05_tv_less_reason_v1",
+      "duration_sec": 3.1,
+      "file": "p05_tv_less_reason_v1.wav",
+      "node_id": "p05_tv_less_reason",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "61b2f67f1d4998b7"
+    },
+    "p06_fairness_v1": {
+      "audio_key": "p06_fairness_v1",
+      "duration_sec": 5.275,
+      "file": "p06_fairness_v1.wav",
+      "node_id": "p06_fairness",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "db83a7e421e94968"
+    },
+    "q01_region_v1": {
+      "audio_key": "q01_region_v1",
+      "duration_sec": 3.737,
+      "file": "q01_region_v1.wav",
+      "node_id": "q01_region",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "54548fcaf74ddebd"
+    },
+    "q02_dynamics_v1": {
+      "audio_key": "q02_dynamics_v1",
+      "duration_sec": 7.412,
+      "file": "q02_dynamics_v1.wav",
+      "node_id": "q02_dynamics",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "b4e5f5fec34aae45"
+    },
+    "q03_intro_v1": {
+      "audio_key": "q03_intro_v1",
+      "duration_sec": 8.9,
+      "file": "q03_intro_v1.wav",
+      "node_id": "q03_intro",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "a04c40a354ddffb6"
+    },
+    "q03a_federal_v1": {
+      "audio_key": "q03a_federal_v1",
+      "duration_sec": 4.162,
+      "file": "q03a_federal_v1.wav",
+      "node_id": "q03a_federal",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "d0d0df3c31e0a6cf"
+    },
+    "q03b_republic_v1": {
+      "audio_key": "q03b_republic_v1",
+      "duration_sec": 3.425,
+      "file": "q03b_republic_v1.wav",
+      "node_id": "q03b_republic",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "7bc3002d192d23d7"
+    },
+    "q03c_local_v1": {
+      "audio_key": "q03c_local_v1",
+      "duration_sec": 4.713,
+      "file": "q03c_local_v1.wav",
+      "node_id": "q03c_local",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "f67f662e756ceb3a"
+    },
+    "q04_president_v1": {
+      "audio_key": "q04_president_v1",
+      "duration_sec": 5.537,
+      "file": "q04_president_v1.wav",
+      "node_id": "q04_president",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "cddf264801f0bb41"
+    },
+    "q05_head_v1": {
+      "audio_key": "q05_head_v1",
+      "duration_sec": 3.75,
+      "file": "q05_head_v1.wav",
+      "node_id": "q05_head",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "23b08bcaac84e6dd"
+    },
+    "q07_material_v1": {
+      "audio_key": "q07_material_v1",
+      "duration_sec": 17.688,
+      "file": "q07_material_v1.wav",
+      "node_id": "q07_material",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "27bf51076460bdab"
+    },
+    "q08_safety_v1": {
+      "audio_key": "q08_safety_v1",
+      "duration_sec": 7.838,
+      "file": "q08_safety_v1.wav",
+      "node_id": "q08_safety",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "3015552f928adfdc"
+    },
+    "q09_anxiety_v1": {
+      "audio_key": "q09_anxiety_v1",
+      "duration_sec": 6.412,
+      "file": "q09_anxiety_v1.wav",
+      "node_id": "q09_anxiety",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "c4ce951fe315c853"
+    },
+    "q10_health_v1": {
+      "audio_key": "q10_health_v1",
+      "duration_sec": 5.013,
+      "file": "q10_health_v1.wav",
+      "node_id": "q10_health",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "a539049372463f03"
+    },
+    "q11_problems_v1": {
+      "audio_key": "q11_problems_v1",
+      "duration_sec": 6.213,
+      "file": "q11_problems_v1.wav",
+      "node_id": "q11_problems",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "61724bd682f4d228"
+    },
+    "q12_prices_v1": {
+      "audio_key": "q12_prices_v1",
+      "duration_sec": 6.987,
+      "file": "q12_prices_v1.wav",
+      "node_id": "q12_prices",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "9d47e13d183c97a3"
+    },
+    "q13_normalization_v1": {
+      "audio_key": "q13_normalization_v1",
+      "duration_sec": 6.8,
+      "file": "q13_normalization_v1.wav",
+      "node_id": "q13_normalization",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "e77f7ee82a9d7033"
+    },
+    "q14_sources_v1": {
+      "audio_key": "q14_sources_v1",
+      "duration_sec": 18.288,
+      "file": "q14_sources_v1.wav",
+      "node_id": "q14_sources",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "69e0258506b031f0"
+    },
+    "q15_trusted_v1": {
+      "audio_key": "q15_trusted_v1",
+      "duration_sec": 13.925,
+      "file": "q15_trusted_v1.wav",
+      "node_id": "q15_trusted",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "95159e89f0397aa4"
+    },
+    "q16_svo_v1": {
+      "audio_key": "q16_svo_v1",
+      "duration_sec": 7.562,
+      "file": "q16_svo_v1.wav",
+      "node_id": "q16_svo",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "52ba7e39ec63388b"
+    },
+    "q_fairness_v1": {
+      "audio_key": "q_fairness_v1",
+      "duration_sec": 5.275,
+      "file": "q_fairness_v1.wav",
+      "node_id": "q_fairness",
+      "rendered_at": "2026-08-24T12:17:46.217828+00:00",
+      "text_hash": "db83a7e421e94968"
+    },
+    "screen_age_v1": {
+      "audio_key": "screen_age_v1",
+      "duration_sec": 3.725,
+      "file": "screen_age_v1.wav",
+      "node_id": "screen_age",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "233d3b86a6a9af7c"
+    },
+    "screen_territory_v1": {
+      "audio_key": "screen_territory_v1",
+      "duration_sec": 3.15,
+      "file": "screen_territory_v1.wav",
+      "node_id": "screen_territory",
+      "rendered_at": "2026-08-24T11:59:43.061058+00:00",
+      "text_hash": "9030bf8cb34ccfb4"
+    },
+    "sensitive_notice_v1": {
+      "audio_key": "sensitive_notice_v1",
+      "duration_sec": 6.875,
+      "file": "sensitive_notice_v1.wav",
+      "node_id": "sensitive_notice",
+      "rendered_at": "2026-08-20T17:48:00.149782+00:00",
+      "text_hash": "13960ca5aeacc290"
+    }
+  },
+  "questionnaire": "Мониторинг: волна с модулем «Госуправление и экономика»",
+  "sample_rate": 8000,
+  "version_id": "c8ad62c9a08dae35",
+  "voice": "baya"
+}

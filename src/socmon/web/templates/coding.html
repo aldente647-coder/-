@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Разбор{% endblock %}
+{% block crumb %}Разбор ответов{% endblock %}
+{% block body %}
+<h1>Разбор открытых ответов</h1>
+
+<form class="row" method="get">
+  <select name="wave">
+    {% for w in waves %}
+    <option value="{{ w.code }}" {% if wave and wave.code == w.code %}selected{% endif %}>{{ w.code }} — {{ w.name }}</option>
+    {% endfor %}
+  </select>
+  <button>Показать</button>
+</form>
+
+{% if not wave %}<div class="empty">Волн пока нет</div>
+{% else %}
+<div class="cards">
+  <div class="card"><div class="l">проверено</div><div class="n">{{ reviewed }}/{{ ambiguous_total }}</div></div>
+  <div class="card"><div class="l">тем встретилось</div><div class="n">{{ themes|length }}</div></div>
+</div>
+
+{% if themes %}
+<h2>Темы волны</h2>
+<div class="panel scroll">
+<table>
+  <tr><th>Тема</th><th>Ответов</th></tr>
+  {% for code, count in themes.items() %}
+  <tr><td><code>{{ code }}</code></td><td>{{ count }}</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endif %}
+
+<h2>На проверку</h2>
+{% if queue %}
+<div class="panel scroll">
+<table>
+  <tr><th>Интервью</th><th>Вопрос</th><th>Темы</th><th>Упоминания</th><th>Тональность</th><th></th></tr>
+  {% for row in queue %}
+  <tr>
+    <td><a href="/interviews/{{ row.interview_id }}" class="plain"><code>{{ row.interview_id.hex[:10] }}</code></a></td>
+    <td>{{ row.node_id }}</td>
+    <td>{{ row.themes|join(', ') if row.themes else '—' }}</td>
+    <td>{% for e in row.entities %}<span class="tag {% if e.ambiguous %}warn{% endif %}">{{ e.surface }}</span> {% endfor %}</td>
+    <td>{{ row.sentiment.tone | ru if row.sentiment else '—' }}</td>
+    <td>
+      <form method="post" action="/coding/{{ row.id }}/reviewed">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+        <button class="ghost">Проверено</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+<p class="sub">Отметка не меняет разметку — вывод остаётся модельным.</p>
+{% else %}
+<div class="empty">Очередь пуста</div>
+{% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Интервью{% endblock %}
+{% block crumb %}Интервью{% endblock %}
+{% block body %}
+<h1>Интервью</h1>
+{% if not me.sees_phone_numbers %}
+<p class="sub">Массив обезличен — телефонные номера вашей роли недоступны</p>
+{% endif %}
+
+<form class="row" method="get">
+  <select name="validity">
+    <option value="">Любая валидность</option>
+    {% for v in validities %}
+    <option value="{{ v.value }}" {% if validity == v.value %}selected{% endif %}>{{ v.value | ru }}</option>
+    {% endfor %}
+  </select>
+  <select name="outcome">
+    <option value="">Любой исход</option>
+    {% for o in outcomes %}
+    <option value="{{ o.value }}" {% if outcome == o.value %}selected{% endif %}>{{ o.value | ru }}</option>
+    {% endfor %}
+  </select>
+  <button>Показать</button>
+</form>
+
+{% if interviews %}
+<div class="panel scroll">
+<table>
+  <tr><th>Идентификатор</th><th>Начато</th><th>Длит.</th><th>Исход</th><th>Валидность</th></tr>
+  {% for i in interviews %}
+  <tr>
+    <td><a href="/interviews/{{ i.id }}" class="plain"><code>{{ i.id.hex[:12] }}</code></a></td>
+    <td>{{ i.started_at.strftime('%d.%m %H:%M') if i.started_at }}</td>
+    <td>{{ '%.0f'|format(i.duration_sec or 0) }} с</td>
+    <td>{{ i.outcome.value | ru if i.outcome }}</td>
+    <td><span class="tag {% if i.validity.value == 'valid' %}ok{% elif i.validity.value == 'invalid' %}bad{% endif %}">{{ i.validity.value | ru }}</span></td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% else %}
+<div class="empty">Ничего не найдено</div>
+{% endif %}
+{% endblock %}

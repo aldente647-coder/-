@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Анкеты{% endblock %}
+{% block crumb %}Анкеты{% endblock %}
+{% block body %}
+<h1>Анкеты</h1>
+{% if error %}<div class="note bad">{{ error }}</div>{% endif %}
+
+<form class="row" method="get">
+  <select name="wave">
+    {% for w in waves %}
+    <option value="{{ w.code }}" {% if wave and wave.code == w.code %}selected{% endif %}>{{ w.code }} — {{ w.name }}</option>
+    {% endfor %}
+  </select>
+  <button>Показать</button>
+</form>
+
+{% if not wave %}<div class="empty">Волн пока нет</div>
+{% else %}
+{% if versions %}
+<div class="panel scroll">
+<table>
+  <tr><th>Версия</th><th>Название</th><th>Узлов</th><th>Вопросов</th><th>Ядро</th><th>Граф</th><th>Озвучка</th><th>Утверждена</th><th></th></tr>
+  {% for v in versions %}
+  {% set d = details[v.id] %}
+  <tr>
+    <td><code>{{ v.version_id }}</code></td>
+    <td>{{ v.name }}</td>
+    <td>{{ d.nodes }}</td><td>{{ d.questions }}</td><td>{{ d.core_keys }}</td>
+    <td>{% if d.valid %}<span class="tag ok">в порядке</span>{% else %}<span class="tag bad">{{ d.problem }}</span>{% endif %}</td>
+    <td>
+      {% if d.voice_ready %}<span class="tag ok">полная</span>
+      {% else %}
+        {% if d.voice_missing %}<span class="tag bad">нет {{ d.voice_missing }}</span>{% endif %}
+        {% if d.voice_stale %}<span class="tag bad">устарело {{ d.voice_stale }}</span>{% endif %}
+      {% endif %}
+    </td>
+    <td>{% if v.approved_at %}{{ v.approved_at.strftime('%d.%m.%Y') }}<br><span class="tag">{{ v.approved_by }}</span>
+        {% else %}<span class="tag">нет</span>{% endif %}</td>
+    <td>
+      {% if not v.approved_at and d.valid %}
+      <form method="post" action="/questionnaires/{{ v.id }}/approve">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+        <button class="ghost">Утвердить</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% if d.voice_stale %}
+  <tr><td colspan="9" style="white-space:normal;background:var(--bg);color:var(--bad)">
+    <b>Формулировка изменилась после озвучки.</b> Робот произнесёт прошлую редакцию вопроса,
+    а в массив запишется код по новой. Переозвучьте: <code>socmon voice render</code>
+  </td></tr>
+  {% endif %}
+  {% endfor %}
+</table>
+</div>
+{% else %}
+<div class="empty">К волне не привязана ни одна анкета</div>
+{% endif %}
+
+{% if wave.status.value == 'draft' %}
+<h2>Привязать анкету</h2>
+<form method="post" action="/questionnaires/{{ wave.id }}/upload" enctype="multipart/form-data" class="row">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token(request) }}">
+  <input type="file" name="file" accept=".yaml,.yml" required>
+  <button>Загрузить</button>
+</form>
+<p class="sub">Анкета проверяется при загрузке. Не прошедшая проверку не сохраняется.</p>
+{% else %}
+<div class="note">Волна не в черновике — привязать другую анкету нельзя.</div>
+{% endif %}
+{% endif %}
+{% endblock %}
